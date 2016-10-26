@@ -1,0 +1,56 @@
+﻿
+<h2>Category wise Review Number</h2>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<div id="chartdiv" style="width: 800px; height: 500px;">
+</div>
+
+
+
+
+<script type="text/javascript">
+   google.charts.load('current', { 'packages': ['bar'] });
+   // google.charts.load("current", { packages: ["corechart"] });
+
+
+    $(document).ready(function () {
+        $.ajax(
+            {
+                url: '/Home/CategoryWiseRatingChart',
+                type: 'get',
+                dataType: "json",
+
+                success: successFunc,
+                error: errorFunc
+            });
+
+        function successFunc(datachart) {
+
+            var data = new google.visualization.DataTable();
+            // Declare columns
+            data.addColumn('string', 'Business Category');
+            data.addColumn('number', 'Reviews');
+
+            for (var i = 0; i < datachart.length; i++) {
+                data.addRow([
+                     datachart[i].CategoryName, datachart[i].TotalReview
+              
+                ]);
+            }
+
+            var options = {
+                'title': 'Overview',
+                'width': 600,
+                'height': 300
+            };
+            var chart = new google.charts.Bar(document.getElementById("chartdiv"));
+            chart.draw(data, options);
+        }
+
+        function errorFunc() {
+            alert('MVC controller call failed.');
+        }
+    });
+    </script>

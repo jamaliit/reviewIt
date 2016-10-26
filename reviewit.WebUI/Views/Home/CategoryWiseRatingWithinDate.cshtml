@@ -1,0 +1,117 @@
+﻿
+@model reviewIt.Core.ViewModels.ReviewViewModel
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/Highcharts-4.0.1/js/highcharts.js"></script>
+
+
+<div class="form-group">
+    @Html.DropDownListFor(m=>m.BusinessId, new SelectList(ViewBag.AllBusinessList, "Value", "Text"))
+    
+    <select id="year" name="year">
+        <script>
+            var myDate = new Date();
+            var year = myDate.getFullYear();
+            for (var i = 1900; i < year + 1; i++) {
+                document.write('<option value="' + i + '">' + i + '</option>');
+            }
+        </script>
+
+    </select>
+</div>
+<div class="form-group">
+    <input type="submit" onclick="submitRecord()" class="btn btn-block btn-primary" value="Submit" />
+</div>
+
+<script>
+
+  
+
+    function submitRecord(){
+    
+        var businessId = $('#BusinessId').val();
+       // var post = $('#PostReview').val();
+        var year = $('#year').val();
+       //alert(year)
+     
+        $.ajax({
+            url: '@Url.Action("CategoryWiseRatingWithinDateRange", "Home")',
+            type: 'post',
+            data: {
+                businessId: businessId,
+                year: year,
+             
+            },
+            success: function (data) {
+                window.location.href = '@Url.Action("CategoryWiseRatingWithinDateRange", "Home")' + '?' +
+                    $.param({
+                        businessId: businessId,
+                        year: year
+                    });
+               // alert("data saved successfully")
+            },
+            error: function (data) {
+                alert("error occured")
+            },
+        });
+        }
+</script>
+
+
+
+
+
+
+
+
+@*@{
+    ViewBag.Title = "CategoryWiseRatingWithinDate";
+}
+
+<link href="~/Content/jquery-ui-1.12.1/jquery-ui.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Content/jquery-ui-1.12.1/jquery-ui.js"></script>
+<h2>CategoryWiseRatingWithinDate</h2>
+
+
+<p> from Date: <input type="text" id="datepicker" >
+to Date: <input type="text" id="datepicker1"></p>
+
+<button id="btnSubmit">
+    UservsUserReviews
+</button>
+
+<script>
+    $('#datepicker').datepicker();
+    $('#datepicker1').datepicker();
+
+    $('#btnSubmit').click(function () {
+        var date1 = $('#datepicker').val();
+        var date2 = $('#datepicker1').val();
+        alert(date1);
+        alert(date2);
+
+        $.ajax({
+            url: '@Url.Action("CategoryWiseRatingWithinDateRange", "Home")',
+            type: 'post',
+            data: {
+                fromDate: date1,
+                toDate: date2
+            },
+            success: function (data) {
+                alert("data saved successfully")
+            },
+            error: function (data) {
+                alert("error occured")
+            },
+        });
+
+    })
+</script>*@
+
+
+
+
+
+

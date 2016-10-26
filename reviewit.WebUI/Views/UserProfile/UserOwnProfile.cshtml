@@ -1,0 +1,35 @@
+﻿@model reviewIt.Core.ViewModels.UserProfileViewModel
+@{
+    ViewBag.Title = "UserProfile";
+}
+
+<h2>BusinessProfile</h2>
+
+<div class="col-lg-5">
+    <ul class="list-group">
+        <li class="list-group-item">Name: @Model.Name</li>
+        <li class="list-group-item">Email: @Model.Email</li>
+        <li class="list-group-item">About: @Model.Location</li>
+        @*<li class="list-group-item">City: @Model.City</li>*@
+
+        @*<li class="list-group-item">ID: @Model.BusinessId</li>*@
+        <li class="list-group-item">@Html.ActionLink("Edit", "Edit", new { id = @Model.UserId }, null)  </li>
+    </ul>
+
+</div>
+
+<div class="col-lg-3">
+    @*<button class="btn-danger">Edit</button>*@
+    @Html.ActionLink("Edit", "Edit", new { id = @Model.UserId }, null)
+</div>
+<div>
+    <h2>
+        <a href="@Url.Action("AllUserReview","Review", new { user = @Model.Name })">           
+        @Model.TotalReviews Reviews
+    </a>
+</h2>
+</div>
+<div class="col-lg-3">
+    @*<button class="btn-danger">Edit</button>*@
+    @Html.ActionLink("Reviews", "AllUserReview", "Review", new { user = @Model.Name }, null)
+</div>

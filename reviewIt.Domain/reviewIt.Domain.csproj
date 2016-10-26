@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{510DA8DC-F860-4A9A-8692-CF06E4D4B377}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>reviewIt.Domain</RootNamespace>
+    <AssemblyName>CRM.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Migrations\201608211744463_InitialCreate.cs" />
+    <Compile Include="Migrations\201608211744463_InitialCreate.Designer.cs">
+      <DependentUpon>201608211744463_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609271746305_name.cs" />
+    <Compile Include="Migrations\201609271746305_name.Designer.cs">
+      <DependentUpon>201609271746305_name.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609300734399_aa.cs" />
+    <Compile Include="Migrations\201609300734399_aa.Designer.cs">
+      <DependentUpon>201609300734399_aa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609300744100_aa1.cs" />
+    <Compile Include="Migrations\201609300744100_aa1.Designer.cs">
+      <DependentUpon>201609300744100_aa1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609300844135_ss.cs" />
+    <Compile Include="Migrations\201609300844135_ss.Designer.cs">
+      <DependentUpon>201609300844135_ss.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609300852557_hh.cs" />
+    <Compile Include="Migrations\201609300852557_hh.Designer.cs">
+      <DependentUpon>201609300852557_hh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610010722434_ff.cs" />
+    <Compile Include="Migrations\201610010722434_ff.Designer.cs">
+      <DependentUpon>201610010722434_ff.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610021546236_gg.cs" />
+    <Compile Include="Migrations\201610021546236_gg.Designer.cs">
+      <DependentUpon>201610021546236_gg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610031755201_ww.cs" />
+    <Compile Include="Migrations\201610031755201_ww.Designer.cs">
+      <DependentUpon>201610031755201_ww.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610150321447_bg.cs" />
+    <Compile Include="Migrations\201610150321447_bg.Designer.cs">
+      <DependentUpon>201610150321447_bg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\BusinessCategory.cs" />
+    <Compile Include="Models\BusinessProfile.cs" />
+    <Compile Include="Models\Event.cs" />
+    <Compile Include="Models\Review.cs" />
+    <Compile Include="Models\reviewItContext.cs" />
+    <Compile Include="Models\UserProfile.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\Repository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201608211744463_InitialCreate.resx">
+      <DependentUpon>201608211744463_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609271746305_name.resx">
+      <DependentUpon>201609271746305_name.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609300734399_aa.resx">
+      <DependentUpon>201609300734399_aa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609300744100_aa1.resx">
+      <DependentUpon>201609300744100_aa1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609300844135_ss.resx">
+      <DependentUpon>201609300844135_ss.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609300852557_hh.resx">
+      <DependentUpon>201609300852557_hh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610010722434_ff.resx">
+      <DependentUpon>201610010722434_ff.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610021546236_gg.resx">
+      <DependentUpon>201610021546236_gg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610031755201_ww.resx">
+      <DependentUpon>201610031755201_ww.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610150321447_bg.resx">
+      <DependentUpon>201610150321447_bg.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

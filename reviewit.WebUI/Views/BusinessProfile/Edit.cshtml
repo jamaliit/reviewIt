@@ -1,0 +1,37 @@
+﻿@model reviewIt.Core.ViewModels.BusinessProfileViewModel
+@{
+    ViewBag.Title = "Edit Profile";
+}
+
+<h2>Edit Profile</h2>
+
+@using (Html.BeginForm("Edit", "BusinessProfile", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <h2 class="form-signin-heading text-center"></h2>
+    @Html.HiddenFor(m=>m.BusinessId)
+    @Html.HiddenFor(m => m.UserName)
+    <div class="form-group">
+        @Html.TextBoxFor(m => m.BusinessName, new { @class = "form-control", @placeholder = "User Name" })
+        @Html.ValidationMessageFor(m => m.BusinessName)
+    </div>
+
+    <div class="form-group">
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email" })
+        @Html.ValidationMessageFor(m => m.Email)
+    </div>
+
+    <div class="form-group">
+        @Html.TextBoxFor(m => m.City, new { @class = "form-control", @placeholder = "Location" })
+        @Html.ValidationMessageFor(m => m.City)
+    </div>
+
+
+    <div class="form-group">
+        @Html.TextBoxFor(m => m.About, new { @class = "form-control", @placeholder = "About" })
+        @Html.ValidationMessageFor(m => m.About)
+    </div>
+
+    <div class="form-group">
+        <input type="submit" class="btn btn-block btn-primary" value="Submit" />
+    </div>
+}

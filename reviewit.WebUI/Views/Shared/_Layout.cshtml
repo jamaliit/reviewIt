@@ -1,0 +1,334 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> @ViewBag.Title </title>
+    <!-- Bootstrap core CSS -->
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Content/fonts/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/Content/css/animate.min.css" rel="stylesheet">
+    <link href="~/Content/Site.css" rel="stylesheet">
+    <!-- Custom styling plus plugins -->
+    <link href="~/Content/css/custom.css" rel="stylesheet">
+    <link href="~/Content/css/icheck/flat/green.css" rel="stylesheet" />
+    <link href="~/Content/css/jquery-ui.css" rel="stylesheet" />
+
+    <link href="~/Content/css/datatables/tools/css/dataTables.tableTools.css" rel="stylesheet" />
+
+    <script src="~/Content/js/jquery.min.js"></script>
+    <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Content/js/nprogress.js"></script>
+    <!--[if lt IE 9]>
+          <script src="../assets/js/ie8-responsive-file-warning.js"></script>
+          <![endif]-->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+          <![endif]-->
+</head>
+
+<body class="nav-md">
+    <div class="container body">
+
+        <div class="main_container">
+            @if (Request.IsAuthenticated)
+            {
+                <div class="col-md-3 left_col">
+                    <div class="left_col scroll-view">
+                        <div class="navbar nav_title" style="border: 0;">
+                            <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>reviewIt</span></a>
+                        </div>
+                        <div class="clearfix"></div>
+                        <!-- menu prile quick info -->
+                        <div class="profile">
+                            <div class="profile_pic">
+                                <img src="~/Content/images/img.jpg" alt="..." class="img-circle profile_img">
+                            </div>
+                            <div class="profile_info">
+                                <span>Welcome,</span>
+                                @if(User.IsInRole("User"))
+                                {
+                                   //@Membership.GetUserNameByEmail()
+                                    <h2><a href="@Url.Action("UserOwnProfile", "UserProfile", new { user = User.Identity.Name })">@User.Identity.Name</a></h2>
+                                }
+                                else
+                                {
+                                    <h2><a href="@Url.Action("IndividualBusinessProfile", "BusinessProfile",new { user = User.Identity.Name })">@User.Identity.Name</a></h2>
+                                }
+                            </div>
+                        </div>
+                        <!-- /menu prile quick info -->
+                        <br />
+                        <!-- sidebar menu -->
+                        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                            <div class="menu_section">
+                                <h3>&nbsp;</h3>
+                                <ul class="nav side-menu">
+                                    <li>
+                                        <a href="@Url.Action("Index", "Home")">
+                                            <i class="fa fa-home"></i> Home
+                                        </a>
+                                    </li>
+                                    @{
+                if (User.IsInRole("Prospect Specialist"))
+                {
+                    <li>
+                        <a href="@Url.Action("IndexForProspectSpecialist", "Prospect")">
+                            <i class="fa fa-line-chart"></i> Prospect
+                        </a>
+                    </li>
+                }
+                else if (User.IsInRole("Account Manager") || User.IsInRole("Sales Coordinator") || User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a href="@Url.Action("Index", "Account")">
+                            <i class="fa fa-user"></i> Account
+                        </a>
+                    </li>
+                                        <li>
+                                            <a href="@Url.Action("Index", "Contact")">
+                                                <i class="fa fa-mobile"></i> Contact
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Index", "Prospect")">
+                                                <i class="fa fa-line-chart"></i> Prospect
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Index", "Forecast")">
+                                                <i class="fa fa-bullhorn"></i> Forecast
+                                            </a>
+                                        </li>
+                    if (User.IsInRole("Admin"))
+                    {
+                        <li>
+                            <a>
+                                <i class="fa fa-cog"></i> Utilities <span class="fa fa-chevron-down"></span>
+                            </a>
+                            <ul class="nav child_menu" style="display: none">
+                                <li>
+                                    <a href="@Url.Action("Index", "User")">
+                                        <i class="fa fa-user-plus"></i> User Management
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "DropDownType")">
+                                        <i class="fa fa-tasks"></i> Type
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "PotentialOpportunity")">
+                                        <i class="fa fa-lightbulb-o"></i> Potential Opportunity
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Person")">
+                                        <i class="fa fa-user"></i> Resource Person
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("IndexForAdmin", "Goal")">
+                                        <i class="fa fa-bullseye"></i> Goal Setting
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Role")">
+                                        <i class="fa fa-user-secret"></i> Role
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                }
+                else if (User.IsInRole("Marketing Coordinator"))
+                {
+                    <li>
+                                        <a href="@Url.Action("IndexForMarketingCoordinator", "Prospect")">
+                                            <i class="fa fa-home"></i> Prospect
+                                        </a>
+                                    </li>
+                }
+                                    }
+
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- /sidebar menu -->
+                        <!-- /menu footer buttons -->
+                        <!-- /menu footer buttons -->
+                    </div>
+                </div>
+            }
+            <!-- top navigation -->
+            @if (Request.IsAuthenticated)
+            {
+                <div class="top_nav">
+                    <div class="nav_menu">
+                        <nav class="" role="navigation">
+                            <div class="nav toggle">
+                                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                            </div>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="">
+                                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <img src="~/Content/images/img.jpg" alt="">
+                                        @if (Request.IsAuthenticated)
+                                        {
+                                            @User.Identity.Name;
+                                        }
+                                        <span class=" fa fa-angle-down"></span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
+                                        @*<li>
+                                            <a href="javascript:;">  Profile</a>
+                                        </li>*@
+                                        <li>
+                                            <a href="@Url.Action("ChangePassword", "Account")">
+                                                <i class="fa fa-key pull-right"></i> Change Password
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Help", "Home")">
+                                                <i class="fa fa-info-circle pull-right"></i> Help
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("LogOff", "Account")">
+                                                <i class="fa fa-sign-out pull-right"></i> Log Out
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                @*<li role="presentation" class="dropdown">
+                                        <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa fa-envelope-o"></i>
+                                            <span class="badge bg-green">6</span>
+                                        </a>
+                                        <ul id="menu1" class="dropdown-menu list-unstyled msg_list animated fadeInDown" role="menu">
+                                            <li>
+                                                <a>
+                                                    <span class="image">
+                                                        <img src="images/img.jpg" alt="Profile Image" />
+                                                    </span>
+                                                    <span>
+                                                        <span>John Smith</span>
+                                                        <span class="time">3 mins ago</span>
+                                                    </span>
+                                                    <span class="message">
+                                                        Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a>
+                                                    <span class="image">
+                                                        <img src="images/img.jpg" alt="Profile Image" />
+                                                    </span>
+                                                    <span>
+                                                        <span>John Smith</span>
+                                                        <span class="time">3 mins ago</span>
+                                                    </span>
+                                                    <span class="message">
+                                                        Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a>
+                                                    <span class="image">
+                                                        <img src="images/img.jpg" alt="Profile Image" />
+                                                    </span>
+                                                    <span>
+                                                        <span>John Smith</span>
+                                                        <span class="time">3 mins ago</span>
+                                                    </span>
+                                                    <span class="message">
+                                                        Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a>
+                                                    <span class="image">
+                                                        <img src="images/img.jpg" alt="Profile Image" />
+                                                    </span>
+                                                    <span>
+                                                        <span>John Smith</span>
+                                                        <span class="time">3 mins ago</span>
+                                                    </span>
+                                                    <span class="message">
+                                                        Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <div class="text-center">
+                                                    <a href="inbox.html">
+                                                        <strong>See All Alerts</strong>
+                                                        <i class="fa fa-angle-right"></i>
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>*@
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            }
+
+            <!-- /top navigation -->
+            <!-- page content -->
+            <div class="right_col" role="main">
+                <div class="container">
+                    @RenderBody()
+                </div>
+                <!-- footer content -->
+                <footer>
+                    <div class="copyright-info">
+                        <p class="pull-right">
+                            All Rights Reserved by Southtech Limited <br />
+                            Developed by Mamun Ahmed & Jamal Hossain
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                </footer>
+                <!-- /footer content -->
+                <!-- /page content -->
+            </div>
+        </div>
+    </div>
+    <div id="custom_notifications" class="custom-notifications dsp_none">
+        <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group"></ul>
+        <div class="clearfix"></div>
+        <div id="notif-group" class="tabbed_notifications"></div>
+    </div>
+
+    @Html.Partial("_PartialCommonModal")
+
+    <script src="~/Content/js/bootstrap.min.js"></script>
+
+    <!-- bootstrap progress js -->
+    <script src="~/Content/js/progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="~/Content/js/nicescroll/jquery.nicescroll.min.js"></script>
+    <!-- icheck -->
+    <script src="~/Content/js/icheck/icheck.min.js"></script>
+    <!-- daterangepicker -->
+    <script src="~/Content/js/pace/pace.min.js"></script>
+    <script src="~/Content/js/custom.js"></script>
+    <script type="~/Content/text/javascript" src="js/datepicker/daterangepicker.js"></script>
+    <!-- chart js -->
+    <script src="~/Content/js/chartjs/chart.min.js"></script>
+    <script src="~/Content/js/datatables/js/jquery.datatables.min.js"></script>
+    <script src="~/Content/js/datatables/js/jquery.datatables.tableTools.js"></script>
+
+
+</body>
+</html>

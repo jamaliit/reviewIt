@@ -1,0 +1,65 @@
+﻿body {
+    padding-bottom: 20px;
+}
+
+.body-content{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+input,
+select,
+textarea {
+    max-width: 750px;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+textarea.input-validation-error {
+    border-color: #b94a48;
+}
+
+.field-validation-error {
+    color: #b94a48;
+}
+
+.field-validation-valid {
+    display:none;
+}
+
+input.input-validation-error {
+    border: 1px solid #b94a48;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+validation-summery-error {
+    color: #b94a48;
+}
+
+.validation-summery-valid {
+    display:none;
+}
+
+select.input-validation-error {
+    border-color: #b94a48;
+}
+
+.mymodal .bootbox-body{
+    text-align: center;
+    color: #3d5086;
+    font-size: 20px;
+}
+
+
+
+
+

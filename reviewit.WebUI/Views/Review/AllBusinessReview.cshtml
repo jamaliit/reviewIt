@@ -1,0 +1,42 @@
+﻿@model IEnumerable<reviewIt.Core.ViewModels.ReviewViewModel>
+@{
+    ViewBag.Title = "Reviews";
+}
+<link href="~/Content/rateit.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.rateit.js"></script>
+<h2>All Review for this Business</h2>
+
+
+
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <div style="border-color:yellow ">
+            @Html.HiddenFor(model=>item.Rating)
+            <div>
+                <a href='@Url.Action("UserOwnProfile", "UserProfile", new { user = item.Createdby }, null)'>  Name: @Html.DisplayFor(model => item.Createdby)</a>
+            </div>
+            <div>
+             Product Name:  @Html.DisplayFor(model => item.ProductName)
+            </div>
+           
+            <div class="rateit" id="rateit10b" data-rateit-step="1" data-rateit-value="@item.Rating">
+            </div>
+  
+            <div>
+           Review:  @Html.DisplayFor(model => item.PostReview)
+            </div>
+        </div>
+    <br/><br/>
+    }
+}
+
+<script type="text/javascript">
+
+    var tooltipvalues = ['bad', 'poor', 'ok', 'good', 'super'];
+    $("#rateit10b").bind('over', function (event, value) { $(this).attr('title', tooltipvalues[value - 1]); });  
+</script>

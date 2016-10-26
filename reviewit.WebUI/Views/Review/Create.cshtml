@@ -1,0 +1,78 @@
+﻿@model reviewIt.Core.ViewModels.ReviewViewModel
+@{
+    ViewBag.Title = "Review";
+}
+<link href="~/Content/rateit.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.rateit.js"></script>
+<h2>Create Review</h2>
+
+
+
+    <h2 class="form-signin-heading text-center"></h2>
+    <div class="form-group">
+        @Html.DropDownListFor(m => m.BusinessId, new SelectList(ViewBag.AllBusinessList, "Value", "Text"))
+        @Html.ValidationMessageFor(m => m.BusinessId)
+    </div>
+    <div class="form-group">
+        @Html.TextBoxFor(m => m.ProductName, new { @class = "form-control", @placeholder = "Product Name" })
+        @Html.ValidationMessageFor(m => m.ProductName)
+    </div>
+
+    <div class="rateit" id="rateit10b"  data-rateit-step="1">
+    </div>
+   
+      <div class="form-group">
+        @Html.TextBoxFor(m => m.PostReview, new { @class = "form-control", @placeholder = "About" })
+        @Html.ValidationMessageFor(m => m.PostReview)
+    </div>
+
+    <div class="form-group">
+        @Html.TextBoxFor(m => m.Createdby, new { @class = "form-control", @placeholder = @User.Identity.Name, @readonly = "readonly" })
+        @Html.ValidationMessageFor(m => m.Createdby)
+    </div>
+    <div class="form-group">
+        <input type="submit" onclick="submitRecord()" class="btn btn-block btn-primary" value="Submit" />
+    </div>
+
+
+
+<script type="text/javascript">
+    var tooltipvalues = ['bad', 'poor', 'ok', 'good', 'super'];
+    $("#rateit10b").bind('over', function (event, value) { $(this).attr('title', tooltipvalues[value - 1]); });
+
+   
+    function submitRecord(){
+    
+        var rating = $('#rateit10b').rateit('value');
+
+        var businessId = $('#BusinessId').val();
+        var post = $('#PostReview').val();
+        var productName = $('#ProductName').val();
+       
+     
+        $.ajax({
+            url: '@Url.Action("Create","Review")',
+            type: 'post',
+            data: {
+                businessId: businessId,
+                productname: productName,
+                rating:rating,
+                post: post,
+                owner: '@User.Identity.Name',
+                date: '@DateTime.Now'
+            },
+            success: function (data) {
+                alert("data saved successfully")
+            },
+            error: function (data) {
+                alert("error occured")
+            },
+        });
+
+
+
+}
+
+</script>
