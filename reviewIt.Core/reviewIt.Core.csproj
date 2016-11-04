@@ -49,12 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AdvertisementService.cs" />
     <Compile Include="Services\BusinessCategoryService.cs" />
     <Compile Include="Services\BusinessProfileService.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\OverallRatingService.cs" />
     <Compile Include="Services\ReviewService.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="ViewModels\AdvertisementViewModel.cs" />
     <Compile Include="ViewModels\BusinessCategoryViewModel.cs" />
     <Compile Include="ViewModels\BusinessProfileViewModel.cs" />
     <Compile Include="ViewModels\DropDownViewModel.cs" />

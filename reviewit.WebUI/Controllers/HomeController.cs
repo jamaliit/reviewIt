@@ -117,6 +117,38 @@ namespace reviewIt.WebUI.Controllers
         }
 
 
+
+        public ActionResult MonthDaywiseReviewCalenderChart()
+        {
+            return View();
+        }
+        public JsonResult MonthDaywiseReviewCalenderChartforUser(int year)
+        {
+            IEnumerable<ReviewViewModel> data = reviewService.getMonthDaywiseReview(User.Identity.Name, year);
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+
+ public ActionResult MonthwiseRating(int year)
+        {
+
+            IEnumerable<ReviewViewModel> data = reviewService.getMonthDaywiseReview(User.Identity.Name, year);
+            return View(data);
+
+        }
+
+
+
+
+
+
+
+
+
+
+
         public ActionResult GoogleMap()
         {
             return View();

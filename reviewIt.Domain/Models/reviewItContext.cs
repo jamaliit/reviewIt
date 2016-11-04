@@ -13,6 +13,8 @@ namespace reviewIt.Domain.Models
         public DbSet<BusinessProfile> BusinessProfile { get; set; }
         public DbSet<Review> Review { get; set; }
         public DbSet<BusinessCategory> BusinessCategory { get; set; }
+        public DbSet<Advertisement> Advertisement { get; set; }
+        public DbSet<Productcategory> Productcategory { get; set; }
 
     }
 }

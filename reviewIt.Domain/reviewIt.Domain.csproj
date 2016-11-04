@@ -88,10 +88,16 @@
     <Compile Include="Migrations\201610150321447_bg.Designer.cs">
       <DependentUpon>201610150321447_bg.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611031725497_www.cs" />
+    <Compile Include="Migrations\201611031725497_www.Designer.cs">
+      <DependentUpon>201611031725497_www.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Advertisement.cs" />
     <Compile Include="Models\BusinessCategory.cs" />
     <Compile Include="Models\BusinessProfile.cs" />
     <Compile Include="Models\Event.cs" />
+    <Compile Include="Models\Productcategory.cs" />
     <Compile Include="Models\Review.cs" />
     <Compile Include="Models\reviewItContext.cs" />
     <Compile Include="Models\UserProfile.cs" />
@@ -129,6 +135,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610150321447_bg.resx">
       <DependentUpon>201610150321447_bg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611031725497_www.resx">
+      <DependentUpon>201611031725497_www.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

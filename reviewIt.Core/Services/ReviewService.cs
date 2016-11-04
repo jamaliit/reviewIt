@@ -178,21 +178,7 @@ namespace reviewIt.Core.Services
                 
             }
 
-                //ReviewViewModel[] data2 = (from s in reviewRepository.Get()
-                //                           join d in businessRepository.Get() on s.BusinessName equals d.BusinessName
-                //                           join c in businessCategoryRepository.Get() on d.CategoryId equals c.CategoryId
-                //                           select new ReviewViewModel
-                //                           {
-                //                               CategoryName = item,
-                //                               star5 = fiveStar,
-                //                               star4 = fourStar,
-                //                               star3 = threeStar,
-                //                               star2 = twoStar,
-                //                               star1 = oneStar,
-                //                           }).ToArray();
-
-
-
+             
                 return list;
             }
 
@@ -251,6 +237,51 @@ namespace reviewIt.Core.Services
             return monthWiseData;
         } 
           
+
+
+
+
+        //Calender Chart
+
+        public IEnumerable<ReviewViewModel> getMonthDaywiseReview(string UserName, int year)
+        {
+
+            IEnumerable<ReviewViewModel> data = (from s in reviewRepository.Get()
+                                                 where s.CreatedDate.Year == year && s.Createdby == UserName
+                                               
+                                                 //join d in businessRepository.Get() on s.BusinessName equals d.BusinessName
+                                                 //join c in businessCategoryRepository.Get() on d.CategoryId equals c.CategoryId
+                                                 select new ReviewViewModel 
+                                                 {
+                                                     month = s.CreatedDate.Month,
+                                                     day = s.CreatedDate.Day,
+                                                     Rating = s.Rating,
+
+                                                 }).AsEnumerable();
+
+            var data1 = (from s in db.Review
+                         where s.CreatedDate.Year == year && s.Createdby == UserName
+                         group s by new {month = s.CreatedDate.Month,day = s.CreatedDate.Day} into d
+                         select new ReviewViewModel{
+                             month =    d.Key.month,
+                             day = d.Key.day,
+                             Rating = d.Count(),
+                         });
+          //var data1 =  data.GroupBy(r => r.CreatedDate.Date, r => r.CreatedDate.Month).Select(r=>r.Count(r));
+                           
+                            
+                            
+
+            return data1;
+        } 
+
+
+
+
+
+
+
+
         }
     }
 

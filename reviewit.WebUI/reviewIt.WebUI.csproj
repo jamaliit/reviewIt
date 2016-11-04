@@ -456,6 +456,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdvertisementController.cs" />
     <Compile Include="Controllers\BusinessProfileController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\EventController.cs" />
@@ -499,6 +500,11 @@
     <Content Include="Views\Home\LocationWiseRating.cshtml" />
     <Content Include="Views\Home\CategoryWiseRatingWithinDate.cshtml" />
     <Content Include="Views\Home\CategoryWiseRatingWithinDateRange.cshtml" />
+    <Content Include="Views\Home\MonthDaywiseReviewCalenderChart.cshtml" />
+    <Content Include="Views\Home\MonthwiseRating.cshtml" />
+    <Content Include="Views\Advertisement\Index.cshtml" />
+    <Content Include="Views\Advertisement\Create.cshtml" />
+    <Content Include="Views\Advertisement\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
