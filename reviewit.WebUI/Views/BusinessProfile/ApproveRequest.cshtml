@@ -7,7 +7,7 @@
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery.validate.js"></script>
 <script src="~/Scripts/jquery.validate.js"></script>
-<h2>Approve Request</h2>
+<h2>Request for Approval</h2>
 
 
 <div>
@@ -20,7 +20,9 @@
             <th>Email</th>
             <th>City</th>
             <th>About</th>
-            <th></th>
+            <th>User name</th>
+            <th>Categories</th>
+            <th>About</th>
         </tr>
     @if(Model!=null)
     {
@@ -37,14 +39,22 @@
                 <td>
                     @Html.DisplayFor(model => item.City)
                 </td>
-
+               <td>
+                   @Html.DisplayFor(model => item.Website)
+               </td>
+               <td>
+                   @Html.DisplayFor(model => item.UserName)
+               </td>
+               <td>
+                   @Html.DisplayFor(model => item.Categories)
+               </td>
                 <td>
                     @Html.DisplayFor(model => item.About)
                 </td> 
                @using (Html.BeginForm("ApproveRequest", "BusinessProfile", new { Businessid = item.BusinessId }, FormMethod.Post, new { }))
   {
                 <td>
-                    <button type="submit" id="btnApprove"> Approve </button>
+                    <button type="submit" class="btn btn-default" id="btnApprove"> Approve </button>
                     @*@Html.ActionLink("Approve", "ApproveRequest", new { Businessid = item.BusinessId},null)*@
                 </td> 
                }        

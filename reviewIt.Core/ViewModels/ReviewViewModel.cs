@@ -16,6 +16,7 @@ namespace reviewIt.Core.ViewModels
         public DateTime CreatedDate { get; set; }
         public int Rating { get; set; }
         public string Createdby { get; set; }
+        public string UserImage { get; set; }
         public int TotalReview { get; set; }
         public string CategoryName { get; set; }
         public double star1 { get; set; }
@@ -37,6 +38,7 @@ namespace reviewIt.Core.ViewModels
         public int Nov { get; set; }
         public int Dec { get; set; }
         public int day { get; set; }
+        public string ranking { get; set; }
       
     }
 }

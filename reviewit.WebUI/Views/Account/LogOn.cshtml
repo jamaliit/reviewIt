@@ -29,12 +29,12 @@
         </div>
 
         <div class="form-group">
-            <div class="col-md-6">
+            <div class="col-md-7">
                 @Html.CheckBoxFor(m => m.RememberMe)
                 @Html.LabelFor(m => m.RememberMe)
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <input type="submit" class="btn btn-block btn-primary" value="Sign In" />
             </div>
         </div>
@@ -44,5 +44,8 @@
 
     <p>
         Don't have an account? Please @Html.ActionLink("Register", "Register")
+    </p>
+    <p>
+       Register Your Business   @Html.ActionLink("Click here", "RequestforBusinessAccount", "BusinessProfile")
     </p>
 </div>

@@ -1,23 +1,39 @@
-﻿using CRM.Core.Services;
-using CRM.Core.ViewModels;
+﻿using reviewIt.Core.Services;
+using reviewIt.Core.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace reviewIt.WebUI.Controllers
 {
+     [Authorize]
     public class AdvertisementController : Controller
     {
         private AdvertisementService advertisementService = new AdvertisementService();
         // GET: UserProfile
-        public ActionResult Index()
+       
+        public ActionResult Index(string user)
         {
-            IEnumerable<AdvertisementViewModel> data = advertisementService.GetAllAdvertisement();
-            return View(data);
+            IEnumerable<AdvertisementViewModel> data = advertisementService.GetAllAdvertisement(user);
+            return View(data.OrderByDescending(x =>x.CreatedDate));
         }
 
+        public ActionResult IndexforAll()
+        {
+            IEnumerable<AdvertisementViewModel> data = advertisementService.GetAllBusinessAdvertisement();
+            return View(data.OrderByDescending(x => x.CreatedDate));
+        }
+
+        public ActionResult AllPhotos(string user)
+        {
+            IEnumerable<AdvertisementViewModel> data = advertisementService.GetAllAdvertisement(user);
+            return View(data);
+        }
+       
+        [Authorize(Roles="Business Owner")]
         public ActionResult Create()
         {
             return View();
@@ -25,16 +41,23 @@ namespace reviewIt.WebUI.Controllers
         [HttpPost]
         public ActionResult Create(AdvertisementViewModel addVM)
         {
-            var RedirectUrl = "/Advertisement/Index";
+           
             if (ModelState.IsValid)
             {
-                advertisementService.CreateAdvertisement(addVM);
-                return Json(RedirectUrl, JsonRequestBehavior.AllowGet);
+                var fileName ="";
+                if (addVM.File != null)
+                {
+                    fileName = Path.GetFileName(addVM.File.FileName);
+                    var path = Path.Combine(Server.MapPath("~/Uploads"), fileName);
+                    addVM.File.SaveAs(path);
+                }
+              //  addVM.CreatedDate = DateTime.Now;
+                advertisementService.CreateAdvertisement(addVM,fileName,User.Identity.Name);
+                return RedirectToAction("IndividualBusinessProfile", "BusinessProfile", new { user = User.Identity.Name });
             }
             else
             {
-                RedirectUrl = null;
-                return Json(RedirectUrl, JsonRequestBehavior.AllowGet);
+               return View();
             }
         }
 
@@ -51,16 +74,26 @@ namespace reviewIt.WebUI.Controllers
         [HttpPost]
         public ActionResult Edit(AdvertisementViewModel addVM)
         {
-            var RedirectUrl = "/Advertisement/Index";
             if (ModelState.IsValid)
             {
-                advertisementService.UpdateAdvertisement(addVM);
-                return Json(RedirectUrl, JsonRequestBehavior.AllowGet);
+                var fileName = "";
+                if (addVM.File == null)
+                {
+                    fileName = "Default.png";
+
+                }
+                else
+                {
+                    fileName = Path.GetFileName(addVM.File.FileName);
+                    var path = Path.Combine(Server.MapPath("~/Uploads"), fileName);
+                    addVM.File.SaveAs(path);
+                }
+                advertisementService.UpdateAdvertisement(addVM,fileName,User.Identity.Name);
+                return RedirectToAction("PartialViewBusinessandAdvertisement", "BusinessProfile", new { user = User.Identity.Name });
             }
             else
             {
-                RedirectUrl = null;
-                return Json(RedirectUrl, JsonRequestBehavior.AllowGet);
+                return View();
             }
         }
 
@@ -83,7 +116,8 @@ namespace reviewIt.WebUI.Controllers
             }
 
             advertisementService.DeleteAdvertisement(id);
-            return Json(Request.UrlReferrer.ToString());
+            return RedirectToAction("PartialViewBusinessandAdvertisement", "BusinessProfile", new { user = User.Identity.Name });
+
         }
     }
 }

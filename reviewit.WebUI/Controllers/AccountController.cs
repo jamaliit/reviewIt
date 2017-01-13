@@ -67,11 +67,16 @@ namespace reviewIt.WebUI.Controllers
                         && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                     {
                         return Redirect(returnUrl);
-                    }
+                    }                  
+
                     else
                     {
-                       
-                        return RedirectToAction("Index", "Home");
+                        if( Roles.IsUserInRole("Admin"))
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        return RedirectToAction("IndexforAll", "Advertisement");
                     }
                 }
                 else
@@ -116,7 +121,7 @@ namespace reviewIt.WebUI.Controllers
             //RegisterModel model;
             var model = new RegisterModel
             {
-                UserName = data.UserName,
+                UserName = data.BusinessName,
                 Email = data.Email,
                 Role = "BusinessOwner"
                 
@@ -150,11 +155,12 @@ namespace reviewIt.WebUI.Controllers
                         {
                             Name = model.UserName,
                             Email = model.Email,
+                            ImageName = "Default.png",
                         };
                         userController.Create(data);
 
                     }
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("IndexforAll", "Advertisement");
 
 
                 }
@@ -168,9 +174,10 @@ namespace reviewIt.WebUI.Controllers
             return View(model);
         }
 
-        
-
-
+        public ActionResult BusinessView()
+        {
+            return View();
+        }
 
         //
         // GET: /Account/ChangePassword

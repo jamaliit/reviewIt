@@ -40,11 +40,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +90,42 @@
     <Compile Include="Migrations\201611031725497_www.Designer.cs">
       <DependentUpon>201611031725497_www.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611041450400_ll.cs" />
+    <Compile Include="Migrations\201611041450400_ll.Designer.cs">
+      <DependentUpon>201611041450400_ll.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611061702151_wwww.cs" />
+    <Compile Include="Migrations\201611061702151_wwww.Designer.cs">
+      <DependentUpon>201611061702151_wwww.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611061800211_qqqq.cs" />
+    <Compile Include="Migrations\201611061800211_qqqq.Designer.cs">
+      <DependentUpon>201611061800211_qqqq.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611081423497_jjj.cs" />
+    <Compile Include="Migrations\201611081423497_jjj.Designer.cs">
+      <DependentUpon>201611081423497_jjj.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611110034519_jjjjj.cs" />
+    <Compile Include="Migrations\201611110034519_jjjjj.Designer.cs">
+      <DependentUpon>201611110034519_jjjjj.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611141532211_eeee.cs" />
+    <Compile Include="Migrations\201611141532211_eeee.Designer.cs">
+      <DependentUpon>201611141532211_eeee.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611201515476_fgngkf.cs" />
+    <Compile Include="Migrations\201611201515476_fgngkf.Designer.cs">
+      <DependentUpon>201611201515476_fgngkf.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611201722060_ssddd.cs" />
+    <Compile Include="Migrations\201611201722060_ssddd.Designer.cs">
+      <DependentUpon>201611201722060_ssddd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611211753413_fdfd.cs" />
+    <Compile Include="Migrations\201611211753413_fdfd.Designer.cs">
+      <DependentUpon>201611211753413_fdfd.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Advertisement.cs" />
     <Compile Include="Models\BusinessCategory.cs" />
@@ -138,6 +172,33 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611031725497_www.resx">
       <DependentUpon>201611031725497_www.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611041450400_ll.resx">
+      <DependentUpon>201611041450400_ll.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611061702151_wwww.resx">
+      <DependentUpon>201611061702151_wwww.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611061800211_qqqq.resx">
+      <DependentUpon>201611061800211_qqqq.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611081423497_jjj.resx">
+      <DependentUpon>201611081423497_jjj.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611110034519_jjjjj.resx">
+      <DependentUpon>201611110034519_jjjjj.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611141532211_eeee.resx">
+      <DependentUpon>201611141532211_eeee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611201515476_fgngkf.resx">
+      <DependentUpon>201611201515476_fgngkf.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611201722060_ssddd.resx">
+      <DependentUpon>201611201722060_ssddd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611211753413_fdfd.resx">
+      <DependentUpon>201611211753413_fdfd.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

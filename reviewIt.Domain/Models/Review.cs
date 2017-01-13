@@ -13,7 +13,6 @@ namespace reviewIt.Domain.Models
         public int ReviewId { get; set; }
         public int BusinessId { get; set; }
         public string BusinessName { get; set; }
-        public string ProductName { get; set; }
         public string PostReview { get; set; }
         public DateTime CreatedDate { get; set; }
         public int Rating { get; set; }

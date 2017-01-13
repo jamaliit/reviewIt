@@ -14,12 +14,14 @@ namespace reviewIt.Core.Services
     {
         private reviewItContext db;
         private IRepository<BusinessProfile> businessRepository;
+        private IRepository<BusinessCategory> businessCategoryRepository;
         private BusinessProfile business;
 
         public BusinessProfileService()
         {
             db = new reviewItContext();
             businessRepository = new Repository<BusinessProfile>(db);
+            businessCategoryRepository = new Repository<BusinessCategory>(db);
             //<UserProfile>(db);
         }
 
@@ -33,14 +35,17 @@ namespace reviewIt.Core.Services
                 Categories = businessVM.Categories,
                 About = businessVM.About,
                 City = businessVM.City,
-                ClosedorMoved = businessVM.ClosedorMoved,
-                OpeningHours = businessVM.OpeningHours,
+               // ClosedorMoved = businessVM.ClosedorMoved,
+               // OpeningHours = businessVM.OpeningHours,
                 Phone = businessVM.Phone,
                 Website = businessVM.Website,
                 Location = businessVM.Location,
                 Email = businessVM.Email,
                 UserName = businessVM.UserName,
-                CategoryId = businessVM.CategoryId
+                CategoryId = businessVM.CategoryId,
+                isBusiness = false,
+                ImageName = "Default.png",
+
             };
 
             businessRepository.Insert(business);
@@ -48,21 +53,27 @@ namespace reviewIt.Core.Services
 
         }
 
-        public void UpdateBusinessProfile(BusinessProfileViewModel businessVM)
+        public void UpdateBusinessProfile(BusinessProfileViewModel businessVM,string path)
         {
             business = new BusinessProfile
             {
                 BusinessId = businessVM.BusinessId,
                 BusinessName = businessVM.BusinessName,
-                //Categories = businessVM.Categories,
+                Categories = businessVM.Categories,
                 About = businessVM.About,
+                UserName = businessVM.UserName,
+                Location = businessVM.Location,
+                ImageName = path,
                 City = businessVM.City,
                 //ClosedorMoved = businessVM.ClosedorMoved,
                // OpeningHours = businessVM.OpeningHours,
-               // Phone = businessVM.Phone,
-               // Website = businessVM.Website,
+                Phone = businessVM.Phone,
+                Website = businessVM.Website,
                // Location = businessVM.Location,
                 Email = businessVM.Email,
+                CategoryId = businessVM.CategoryId,
+                isBusiness = true,
+                
             };
 
             businessRepository.Update(business);
@@ -78,22 +89,23 @@ namespace reviewIt.Core.Services
         public IEnumerable<BusinessProfileViewModel> GetAllBusinessprofile()
         {
             IEnumerable<BusinessProfileViewModel> data = (from s in businessRepository.Get()
-                                                          //where s.IsAccount == true
-                                                          // join d in dropDownTypeRepository.Get() on s.DropDownTypeID equals d.DropDownTypeID
+                                                          where s.isBusiness == false
+                                                          join d in businessCategoryRepository.Get() on s.CategoryId equals d.CategoryId
                                                           select new BusinessProfileViewModel
                                                           {
 
                                                               BusinessId = s.BusinessId,
                                                               BusinessName = s.BusinessName,
-                                                              Categories = s.Categories,
+                                                              Categories = d.CategoryName,
                                                               About = s.About,
                                                               City = s.City,
-                                                              ClosedorMoved = s.ClosedorMoved,
-                                                              OpeningHours = s.OpeningHours,
+                                                              //ClosedorMoved = s.ClosedorMoved,
+                                                             // OpeningHours = s.OpeningHours,
                                                               Phone = s.Phone,
                                                               Website = s.Website,
                                                               Location = s.Location,
                                                               Email = s.Email,
+                                                              UserName = s.UserName,
 
                                                           }).AsEnumerable();
             return data;
@@ -109,15 +121,18 @@ namespace reviewIt.Core.Services
                                              {
                                                  BusinessId = s.BusinessId,
                                                  BusinessName = s.BusinessName,
-                                                 Categories = s.Categories,
+                                                 UserName = s.UserName,
+                                                 ImageName=s.ImageName,
+                                                 //Categories = s.Categories,
                                                  About = s.About,
                                                  City = s.City,
-                                                 ClosedorMoved = s.ClosedorMoved,
-                                                 OpeningHours = s.OpeningHours,
+                                                // ClosedorMoved = s.ClosedorMoved,
+                                                // OpeningHours = s.OpeningHours,
                                                  Phone = s.Phone,
                                                  Website = s.Website,
                                                  Location = s.Location,
                                                  Email = s.Email,
+                                                 CategoryId = s.CategoryId,
 
                                              }).SingleOrDefault();
             return data;
@@ -133,26 +148,37 @@ namespace reviewIt.Core.Services
 
             double totalStar = (fiveStar + fourStar + threeStar + twoStar + oneStar);
             double weightedRating = (fiveStar * 5 + fourStar * 4 + threeStar * 3 + twoStar * 2 + oneStar * 1);
-            double overallRating = weightedRating / totalStar;
-            
+             double overallRating;
+             string avgRating;
+             if (totalStar != 0)
+             {
+                 overallRating = weightedRating / totalStar;
+                  avgRating = overallRating.ToString("0.00");
+             }
+             else avgRating = "0";
+           
+           // int total = db.Review.Count(t => t.Createdby == userName);
             BusinessProfileViewModel data = (from s in businessRepository.Get()
                                              where (s.Email == userName || s.BusinessName == userName)
-                                             //join d in dropDownTypeRepository.Get() on s.DropDownTypeID equals d.DropDownTypeID
+                                             join d in businessCategoryRepository.Get() on s.CategoryId equals d.CategoryId
                                              select new BusinessProfileViewModel
                                              {
                                                  BusinessId = s.BusinessId,
                                                  BusinessName = s.BusinessName,
-                                                 Categories = s.Categories,
+                                                 Categories = d.CategoryName,
+                                                 UserName = s.UserName,
                                                  About = s.About,
+                                                 ImageName = s.ImageName,
                                                  City = s.City,
-                                                 ClosedorMoved = s.ClosedorMoved,
-                                                 OpeningHours = s.OpeningHours,
+                                                // ClosedorMoved = s.ClosedorMoved,
+                                                // OpeningHours = s.OpeningHours,
                                                  Phone = s.Phone,
                                                  Website = s.Website,
                                                  Location = s.Location,
                                                  Email = s.Email,
-                                                 OverallRating = overallRating,
-
+                                                 OverallRating = avgRating,
+                                                 CategoryId = s.CategoryId,
+                                                 TotalReview = totalStar,
                                              }).SingleOrDefault();
             return data;
         }
@@ -164,10 +190,21 @@ namespace reviewIt.Core.Services
                                              where s.BusinessId == businessID
                                              //join d in dropDownTypeRepository.Get() on s.DropDownTypeID equals d.DropDownTypeID
                                              select new BusinessProfileViewModel
-                                             {                                                 
-                                                 BusinessName = s.BusinessName,                                              
+                                             {
+                                                 BusinessId = s.BusinessId,
+                                                 BusinessName = s.BusinessName,
+                                                 Categories = s.Categories,
+                                                 About = s.About,
+                                                 City = s.City,
+                                                 // ClosedorMoved = businessVM.ClosedorMoved,
+                                                 // OpeningHours = businessVM.OpeningHours,
+                                                 Phone = s.Phone,
+                                                 Website = s.Website,
+                                                 Location = s.Location,
                                                  Email = s.Email,
-                                                 UserName = s.UserName
+                                                 UserName = s.UserName,
+                                                 CategoryId = s.CategoryId,
+                                          
 
                                              }).SingleOrDefault();
             return data;
@@ -229,6 +266,32 @@ namespace reviewIt.Core.Services
                                              }).FirstOrDefault();
             return data;
            
+        }
+
+
+        public BusinessProfileViewModel GetBusinessProfileByName(string name)
+        {
+            BusinessProfileViewModel data = (from s in businessRepository.Get()
+                                             where s.BusinessName == name
+                                             //join d in dropDownTypeRepository.Get() on s.DropDownTypeID equals d.DropDownTypeID
+                                             select new BusinessProfileViewModel
+                                             {
+                                                 BusinessId = s.BusinessId,
+                                                 BusinessName = s.BusinessName,
+                                                 UserName = s.UserName,
+                                                 ImageName = s.ImageName,
+                                                 Categories = s.Categories,
+                                                 About = s.About,
+                                                 City = s.City,
+                                                 // ClosedorMoved = s.ClosedorMoved,
+                                                 // OpeningHours = s.OpeningHours,
+                                                 Phone = s.Phone,
+                                                 Website = s.Website,
+                                                 Location = s.Location,
+                                                 Email = s.Email,
+
+                                             }).SingleOrDefault();
+            return data;
         }
 
     }

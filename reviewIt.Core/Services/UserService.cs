@@ -32,6 +32,7 @@ namespace reviewIt.Core.Services
                 Name = userVM.Name,
                 Location = userVM.Location,
                 Email = userVM.Email,
+                ImageName = userVM.ImageName,
             };
 
             userRepository.Insert(user);
@@ -39,7 +40,7 @@ namespace reviewIt.Core.Services
 
         }
 
-        public void UpdateUserProfile(UserProfileViewModel userVM)
+        public void UpdateUserProfile(UserProfileViewModel userVM,string path)
         {
             user = new UserProfile
            {
@@ -47,6 +48,8 @@ namespace reviewIt.Core.Services
                Name = userVM.Name,
                Location = userVM.Location,
                Email = userVM.Email,
+               About = userVM.About,
+               ImageName = path,
            };
 
             userRepository.Update(user);
@@ -86,6 +89,9 @@ namespace reviewIt.Core.Services
                                              Name = s.Name,
                                              Location = s.Location,
                                              Email = s.Email,
+                                             About =s.About,
+                                             ImageName = s.ImageName,
+                                             
                                          }).SingleOrDefault();
             return data;
         }
@@ -94,7 +100,7 @@ namespace reviewIt.Core.Services
         {
           //int total = (from s in db.Review where s.Createdby == userName select ).Count();
             int total = db.Review.Count(t => t.Createdby == userName);
-
+           
             UserProfileViewModel data = (from s in userRepository.Get()
                                              where s.Email == userName || s.Name == userName
                                              //join d in dropDownTypeRepository.Get() on s.DropDownTypeID equals d.DropDownTypeID
@@ -104,7 +110,10 @@ namespace reviewIt.Core.Services
                                                  Name= s.Name,
                                                  Location = s.Location,
                                                  Email = s.Email,
-                                                 TotalReviews = total
+                                                 About = s.About,
+                                                 ImageName = s.ImageName,
+                                                 TotalReviews = total,
+                                                 
 
                                              }).SingleOrDefault();
             return data;
@@ -133,7 +142,38 @@ namespace reviewIt.Core.Services
            
         }
 
-       
+
+
+        public UserProfileViewModel CountAllRating(string userName)
+        {
+
+           // var _context = new TestEntities();
+
+           // ArrayList xValue = new ArrayList();
+           // ArrayList yValue = new ArrayList();
+           
+            double fiveStar = db.Review.Count(t => t.Rating == 5 && t.Createdby == userName);
+            double fourStar = db.Review.Count(t => t.Rating == 4 && t.Createdby == userName);
+            double threeStar = db.Review.Count(t => t.Rating == 3 && t.Createdby == userName);
+            double twoStar = db.Review.Count(t => t.Rating == 2 && t.Createdby == userName);
+            double oneStar = db.Review.Count(t => t.Rating == 1 && t.Createdby == userName);
+
+            UserProfileViewModel data = (from s in userRepository.Get()
+                                             //where (s.Email == userName || s.BusinessName == userName)
+                                             //join d in dropDownTypeRepository.Get() on s.DropDownTypeID equals d.DropDownTypeID
+                                             select new UserProfileViewModel
+                                             {                                               
+                                                 star1 =oneStar,
+                                                 star2=twoStar,
+                                                 star3=threeStar,
+                                                 star4=fourStar,
+                                                 star5=fiveStar
+                                             }).FirstOrDefault();
+            return data;
+           
+        }
+
+        }
     }
-}
+
 

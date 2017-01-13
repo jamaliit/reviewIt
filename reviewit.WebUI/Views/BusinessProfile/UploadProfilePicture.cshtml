@@ -1,0 +1,80 @@
+﻿@model reviewIt.Core.ViewModels.BusinessProfileViewModel
+@{
+    ViewBag.Title = "Update Profile Profile";
+}
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<br />
+<h3>Update Profile Picture</h3>
+<br />
+@using (Html.BeginForm("Edit", "BusinessProfile", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+    <h2 class="form-signin-heading text-center"></h2>
+
+    @Html.HiddenFor(m => m.BusinessId)
+    @Html.HiddenFor(m => m.About)
+    @Html.HiddenFor(m => m.Email)
+    @Html.HiddenFor(m => m.Location)
+    @Html.HiddenFor(m => m.BusinessName)
+    @Html.HiddenFor(m => m.Phone)
+    @Html.HiddenFor(m => m.Website)
+    @Html.HiddenFor(m => m.UserName)
+    @Html.HiddenFor(m => m.CategoryId)
+    @Html.HiddenFor(m => m.City)
+    
+    <div class="col-lg-3 "></div>
+    <div class="col-lg-5 ">
+        <div class="form-group">
+            @*<div class="editor-label">
+                    @Html.LabelFor(m => m.File)
+                </div>*@
+            <div class="editor-field">
+                <img id="imgPreview" alt="" src="" width="200" height="150" /><br />
+                <input type="file" name="File" id="file" />
+                <br />
+
+            </div>
+        </div>
+
+        <div class="form-group center">
+            <input type="submit" class="btn btn-round btn-primary =" onclick=" return confirm('Do you want to confirm?')" value="Submit" />
+        </div>
+        @Html.ActionLink("Back", "IndividualBusinessProfile", "BusinessProfile", new { user = User.Identity.Name }, new { @class = "btn btn-success" })
+
+
+    </div>
+}
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $("img#imgPreview").attr('src', '');
+        $('#file').on('change', function () {
+           // alert("ddd");
+            $("img#imgPreview").attr('src', ''); //First remove the image src if already selected
+            //To check if uploaded file is image only..
+            var fileExtension = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+            if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                alert("Only image files are allowed!");
+                return false;
+            }
+
+
+            //To check 'FileReader' is supported by browser or not..
+            if (typeof (FileReader) != 'undefined') {
+                var frImage = new FileReader();
+                frImage.onload = function (e) {
+                    $("img#imgPreview").attr('src', e.target.result);
+                }
+                frImage.readAsDataURL($(this)[0].files[0]);
+            } else {
+                alert("Your browser does not support FileReader!");
+            }
+        });
+
+    });
+
+</script>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CRM.Core.ViewModels
+namespace reviewIt.Core.ViewModels
 {
    public class BusinessCategoryViewModel
     {

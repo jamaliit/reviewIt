@@ -23,6 +23,9 @@ namespace reviewIt.WebUI.Controllers
         private ReviewService reviewService = new ReviewService();
 
         private UserService userProfileService = new UserService();
+        private AdvertisementService advertisementService = new AdvertisementService();
+        // GET: UserProfile
+
         public ActionResult Index()
         {
             //BusinessProfileViewModel chartData = businessProfileService.CountAllRating(User.Identity.Name);
@@ -31,11 +34,23 @@ namespace reviewIt.WebUI.Controllers
         }
 
 
-        public JsonResult OverallRatingChart()
+        public JsonResult OverallRatingChartforBusiness(string user)
         {
-            BusinessProfileViewModel chartData = businessProfileService.CountAllRating(User.Identity.Name);
-            return Json(chartData, JsonRequestBehavior.AllowGet);
+            
+                BusinessProfileViewModel chartData = businessProfileService.CountAllRating(user);
 
+                return Json(chartData, JsonRequestBehavior.AllowGet);
+            
+        }
+
+
+            
+        public JsonResult OverallRatingChartforUser(string user)
+        {
+            
+                UserProfileViewModel chartData = userProfileService.CountAllRating(user);
+                return Json(chartData, JsonRequestBehavior.AllowGet);
+          
         }
 
         //Draw Chart with Html Helper(bar chart)
@@ -53,9 +68,7 @@ namespace reviewIt.WebUI.Controllers
         //    return File(chart, "image/bytes");
         //}
 
-
-
-
+        [Authorize(Roles="Admin")]
         public JsonResult TotalUservsNoOfUserwhoGivesReviews()
         {
             UserProfileViewModel data = userProfileService.CountUserGiveReviewsorNot();
@@ -70,6 +83,7 @@ namespace reviewIt.WebUI.Controllers
         //    return View(data);
         //}
 
+         [Authorize(Roles = "Admin")]
         public ActionResult CategoryWiseRating()
         {
             return View();
@@ -81,57 +95,64 @@ namespace reviewIt.WebUI.Controllers
 
         }
 
+       [Authorize(Roles = "Admin,Business Owner")]
         public ActionResult CategoryWiseRatingWithinDate()
         {
             ViewBag.businessCategoryList = commonController.GetAllBusinessCategory();
             ViewBag.AllBusinessList = commonController.GetAllBusiness();
-            
+
             return View();
         }
 
-        public ActionResult CategoryWiseRatingWithinDateRange(int businessId, int year)
+        public ActionResult CategoryWiseRatingWithinDateRange(string businessName, int year)
         {
-            string Businessname = commonController.GetBusinessName(businessId);
-            ReviewViewModel data = reviewService.getCategoryWiseRatingWithinDateRange(Businessname,year);
+            //string Businessname = commonController.GetBusinessName(businessId);
+            try
+            {
+                ReviewViewModel data = reviewService.getCategoryWiseRatingWithinDateRange(businessName, year);
 
 
-            var title = new Title() { Text = "Month Wise Review" };
+                var title = new Title() { Text = "Month Wise Review" };
 
-            var subtitle = new Subtitle() { Text = " " +year };
-            string seriesName = "Reviews";
+                var subtitle = new Subtitle() { Text = " " + year };
+                string seriesName = "Reviews";
 
-           DotNet.Highcharts.Highcharts chart = new DotNet.Highcharts.Highcharts("chart")
-               .SetTitle(title)
-               .SetSubtitle(subtitle)
-               .SetXAxis(new XAxis
-                           {
-                               Categories = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
-                           })
-               .SetSeries(new Series
-                           {
-                               Data = new Data(new object[] { data.Jan, data.Feb, data.Mar, data.Apr,data.May, data.June,data.July,data.Aug,data.Sep,data.Oct,data.Nov,data.Dec }),
-                               Name = seriesName                          
-                           });
+                DotNet.Highcharts.Highcharts chart = new DotNet.Highcharts.Highcharts("chart")
+                    .SetTitle(title)
+                    .SetSubtitle(subtitle)
+                    .SetXAxis(new XAxis
+                                {
+                                    Categories = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
+                                })
+                    .SetSeries(new Series
+                                {
+                                    Data = new Data(new object[] { data.Jan, data.Feb, data.Mar, data.Apr, data.May, data.June, data.July, data.Aug, data.Sep, data.Oct, data.Nov, data.Dec }),
+                                    Name = seriesName
+                                });
 
-           return View(chart);
+                return View(chart);
+            }
+            catch
+            {
+                ViewBag.Message = "No data available in this year";
+                return View(ViewBag.Message);
+            }
         }
 
 
-
+        [Authorize(Roles="User")]
         public ActionResult MonthDaywiseReviewCalenderChart()
         {
             return View();
         }
-        public JsonResult MonthDaywiseReviewCalenderChartforUser(int year)
+        public JsonResult MonthDaywiseReviewCalenderChartforUser(string user,int year)
         {
-            IEnumerable<ReviewViewModel> data = reviewService.getMonthDaywiseReview(User.Identity.Name, year);
+            IEnumerable<ReviewViewModel> data = reviewService.getMonthDaywiseReview(user, year);
             return Json(data, JsonRequestBehavior.AllowGet);
 
         }
 
-
-
- public ActionResult MonthwiseRating(int year)
+        public ActionResult MonthwiseRating(int year)
         {
 
             IEnumerable<ReviewViewModel> data = reviewService.getMonthDaywiseReview(User.Identity.Name, year);
@@ -139,26 +160,89 @@ namespace reviewIt.WebUI.Controllers
 
         }
 
-
-
-
-
-
-
-
-
-
-
-        public ActionResult GoogleMap()
+        public ActionResult Search()
         {
             return View();
         }
 
 
-
-        public ActionResult LocationWiseRating()
+        [HttpPost]
+        public ActionResult Search(string name, string option)
         {
-            return View();
+            if(option == "User")
+            {
+                UserProfileViewModel data = userProfileService.GetUserOwnprofile(name);
+                if(data!=null)
+                {
+                    return RedirectToAction("UserOwnProfile", "UserProfile", new { user = name });
+                }
+
+                else
+                {
+                ViewBag.Message = "User not found";
+                return View();
+                }
+            }
+
+            else
+            {
+
+                BusinessProfileViewModel data = businessProfileService.GetBusinessProfileByName(name);
+               if(data!=null)
+                {
+                    return RedirectToAction("IndividualBusinessProfile","BusinessProfile", new{user = name});
+                }
+
+                else{
+                ViewBag.Message = "Business not found";
+                return View();
+                }
+               
+            }
+//return View();
         }
+
+        public ActionResult Ranking()
+        {
+            ViewBag.businessCategoryList = commonController.GetAllBusinessCategory();
+           // IEnumerable<ReviewViewModel> data = reviewService.getBusinessRanking(businessCategory);
+            return View();
+
+        }
+
+         [HttpPost]
+        public ActionResult BusinessRanking(int CategoryId)
+        {
+            if (ModelState.IsValid)
+            {
+                string businessCategory = commonController.GetBusinessCategoryName(CategoryId);
+                IEnumerable<ReviewViewModel> data = reviewService.getBusinessRanking(businessCategory);
+                if (data != null)
+                {
+                    return View(data.OrderByDescending(s => s.ranking));
+                }
+                else
+                {
+                    ViewBag.message = "There is no busiess in your selected category ";
+                    return RedirectToAction("Ranking");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Ranking");
+            }
+
+        }
+
+
+        //public ActionResult GoogleMap()
+        //{
+        //    return View();
+        //}
+
+        //public ActionResult LocationWiseRating()
+        //{
+        //    return View();
+        //}
     }
 }

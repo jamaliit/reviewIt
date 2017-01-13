@@ -6,73 +6,78 @@
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="~/Scripts/jquery.rateit.js"></script>
-<h2>Create Review</h2>
+<br/>
+<h3 style="text-align:center">Write Review</h3>
 
 
 
     <h2 class="form-signin-heading text-center"></h2>
+<div class="col-lg-3 "></div>
+<div class="col-lg-5 ">
     <div class="form-group">
-        @Html.DropDownListFor(m => m.BusinessId, new SelectList(ViewBag.AllBusinessList, "Value", "Text"))
+        @Html.DropDownListFor(m => m.BusinessId, new SelectList(ViewBag.AllBusinessList, "Value", "Text"),"Select Business")
         @Html.ValidationMessageFor(m => m.BusinessId)
     </div>
-    <div class="form-group">
-        @Html.TextBoxFor(m => m.ProductName, new { @class = "form-control", @placeholder = "Product Name" })
-        @Html.ValidationMessageFor(m => m.ProductName)
+    <div class="rateit" id="rateit10b" data-rateit-step="1">
     </div>
 
-    <div class="rateit" id="rateit10b"  data-rateit-step="1">
-    </div>
-   
-      <div class="form-group">
-        @Html.TextBoxFor(m => m.PostReview, new { @class = "form-control", @placeholder = "About" })
+    <div class="form-group">
+        @Html.TextAreaFor(m => m.PostReview, new { @class = "form-control", @placeholder = "Review" })
         @Html.ValidationMessageFor(m => m.PostReview)
     </div>
 
-    <div class="form-group">
+    @*<div class="form-group">
         @Html.TextBoxFor(m => m.Createdby, new { @class = "form-control", @placeholder = @User.Identity.Name, @readonly = "readonly" })
         @Html.ValidationMessageFor(m => m.Createdby)
-    </div>
+    </div>*@
     <div class="form-group">
         <input type="submit" onclick="submitRecord()" class="btn btn-block btn-primary" value="Submit" />
     </div>
 
+    @Html.ActionLink("Back", "UserOwnProfile", "UserProfile", new { user = User.Identity.Name }, new { @class = "btn btn-success" })
+    </div>
+
+    <script type="text/javascript">
+        var tooltipvalues = ['bad', 'poor', 'ok', 'good', 'super'];
+        $("#rateit10b").bind('over', function (event, value) { $(this).attr('title', tooltipvalues[value - 1]); });
 
 
-<script type="text/javascript">
-    var tooltipvalues = ['bad', 'poor', 'ok', 'good', 'super'];
-    $("#rateit10b").bind('over', function (event, value) { $(this).attr('title', tooltipvalues[value - 1]); });
+        function submitRecord() {
 
-   
-    function submitRecord(){
-    
-        var rating = $('#rateit10b').rateit('value');
+            var rating = $('#rateit10b').rateit('value');
 
-        var businessId = $('#BusinessId').val();
-        var post = $('#PostReview').val();
-        var productName = $('#ProductName').val();
-       
-     
-        $.ajax({
-            url: '@Url.Action("Create","Review")',
-            type: 'post',
-            data: {
-                businessId: businessId,
-                productname: productName,
-                rating:rating,
-                post: post,
-                owner: '@User.Identity.Name',
-                date: '@DateTime.Now'
-            },
-            success: function (data) {
-                alert("data saved successfully")
-            },
-            error: function (data) {
-                alert("error occured")
-            },
-        });
+            var businessId = $('#BusinessId').val();
+            var post = $('#PostReview').val();
+           
+            if (rating != "" && businessId != "" && post != "") {
 
+                $.ajax({
+                    url: '@Url.Action("Create","Review")',
+                    type: 'post',
+                    data: {
+                        businessId: businessId,
+                    
+                        rating: rating,
+                        post: post,
+                        owner: '@User.Identity.Name',
+                        date: '@DateTime.Now'
+                    },
+                    success: function (data) {
+                        window.location.href = '@Url.Action("UserOwnProfile", "UserProfile")' + '?' +
+            $.param({
+                user: '@User.Identity.Name'
+            });
+                    },
+                    error: function (data) {
+                        alert("error occured")
+                    },
+                });
 
+            }
+            else {
+                alert("Please fill up all fields");
+            }
 
-}
+        }
 
-</script>
+    </script>

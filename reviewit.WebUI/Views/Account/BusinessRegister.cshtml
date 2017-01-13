@@ -1,10 +1,10 @@
 ﻿@model reviewIt.WebUI.Models.RegisterModel
 
 @{
-    ViewBag.Title = "BusinessRegister";
+    ViewBag.Title = "Business Registration";
 }
 
-<h2>BusinessRegister</h2>
+<h2>Business Registration</h2>
 
 <div class="col-md-offset-4 col-md-4">
     @Html.ValidationSummary(true, "Account creation was unsuccessful. Please correct the errors and try again.")
@@ -14,7 +14,7 @@
         <h2 class="form-signin-heading text-center">Please sign up</h2>
          @Html.HiddenFor(m=> m.Role)
         <div class="form-group">
-            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "User Name" })
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "User Name", @readonly = "readonly" })
             @Html.ValidationMessageFor(m => m.UserName)
         </div>
 
@@ -40,12 +40,8 @@
 
     <hr />
 
+    <p> @Html.ActionLink("Back", "LogOn", "Account", new { @class = "btn btn-default" })</p>
     <p>
         Already have an account? Please @Html.ActionLink("Sign In", "LogOn")
-    </p>
-    <p>
-        
-        
-       for a Business Profile   @Html.ActionLink("Create a Business", "RequestforBusinessAccount", "BusinessProfile")
     </p>
 </div>

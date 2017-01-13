@@ -1,10 +1,11 @@
-﻿
-<h2>Category wise Review Number</h2>
+﻿<br/>
+<h3 style="text-align:center">Category wise Review Number</h3>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
-<div id="chartdiv" style="width: 800px; height: 500px;">
+<br />
+<div class="col-lg-1"></div>
+<div class="col-lg-11" id="chartdiv" style="width: 800px; height: 500px;">
 </div>
 
 
@@ -35,15 +36,14 @@
 
             for (var i = 0; i < datachart.length; i++) {
                 data.addRow([
-                     datachart[i].CategoryName, datachart[i].TotalReview
-              
+                     datachart[i].CategoryName, datachart[i].TotalReview              
                 ]);
             }
 
             var options = {
                 'title': 'Overview',
-                'width': 600,
-                'height': 300
+                'width': 800,
+                'height': 400
             };
             var chart = new google.charts.Bar(document.getElementById("chartdiv"));
             chart.draw(data, options);

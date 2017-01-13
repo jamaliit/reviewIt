@@ -41,6 +41,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,11 +58,14 @@
     <Compile Include="Services\ReviewService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="ViewModels\AdvertisementViewModel.cs" />
+    <Compile Include="ViewModels\BusinessandAdvertisementViewModel.cs" />
     <Compile Include="ViewModels\BusinessCategoryViewModel.cs" />
     <Compile Include="ViewModels\BusinessProfileViewModel.cs" />
     <Compile Include="ViewModels\DropDownViewModel.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />
+    <Compile Include="ViewModels\RankingViewModel.cs" />
     <Compile Include="ViewModels\ReviewViewModel.cs" />
+    <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="ViewModels\UserProfileViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

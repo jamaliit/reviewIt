@@ -36,5 +36,12 @@ namespace reviewIt.WebUI.Controllers
            BusinessProfileViewModel businessName= businessService.getBusinessName(id);
             return businessName.BusinessName ;
         }
+
+        internal string GetBusinessCategoryName(int id)
+        {
+            BusinessCategoryService businessCategoryService = new BusinessCategoryService();
+            BusinessCategoryViewModel businessName = businessCategoryService.getBusinessCategoryName(id);
+            return businessName.CategoryName;
+        }
     }
 }

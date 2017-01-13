@@ -6,32 +6,42 @@
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="~/Scripts/jquery.rateit.js"></script>
-<h2>All Review for this Business</h2>
-
-
+<br/>
+<h3 style="text-align:center">All Review for this Business</h3>
+Total Reviews: @Model.Count()
+<br /><br />
 
 
 @if (Model != null)
 {
     foreach (var item in Model)
     {
-        <div style="border-color:yellow ">
-            @Html.HiddenFor(model=>item.Rating)
-            <div>
-                <a href='@Url.Action("UserOwnProfile", "UserProfile", new { user = item.Createdby }, null)'>  Name: @Html.DisplayFor(model => item.Createdby)</a>
+       <div  id="reviews">
+            @Html.HiddenFor(model => item.Rating)
+            <div class="row">
+                <div class="col-lg-1" style="padding-right:0px;width:75px;">
+                    <img src="@Url.Content("~/Uploads/"+@item.UserImage)" style=" height:50px;width:50px;border:1px solid #021a40;" alt="" />
+                </div>
+                <div class="col-lg-6" style="padding:0px;">
+                    <p>                        
+                        <a style="color:blue" href='@Url.Action("UserOwnProfile", "UserProfile", new { user = item.Createdby }, null)'> @Html.DisplayFor(model => item.Createdby)</a>
+                         reviewed                        
+                        <a style="color:blue" href="@Url.Action("PartialViewBusinessandAdvertisement", "BusinessProfile", new { user = item.BusinessName },null)"> @Html.DisplayFor(model => item.BusinessName)</a>                     
+                    </p>
+                      @Html.DisplayFor(model => item.CreatedDate)
+</div>
             </div>
-            <div>
-             Product Name:  @Html.DisplayFor(model => item.ProductName)
-            </div>
-           
+            <br />
+            @*<div>
+                <a href="@Url.Action("PartialViewBusinessandAdvertisement", "BusinessProfile", new { user = item.BusinessName })">  Name: @Html.DisplayFor(model => item.BusinessName)</a>
+            </div>*@
             <div class="rateit" id="rateit10b" data-rateit-step="1" data-rateit-value="@item.Rating">
             </div>
-  
             <div>
-           Review:  @Html.DisplayFor(model => item.PostReview)
-            </div>
+                Review:  @Html.DisplayFor(model => item.PostReview)
+            </div><br/>
         </div>
-    <br/><br/>
+    <br/>
     }
 }
 
@@ -40,3 +50,12 @@
     var tooltipvalues = ['bad', 'poor', 'ok', 'good', 'super'];
     $("#rateit10b").bind('over', function (event, value) { $(this).attr('title', tooltipvalues[value - 1]); });  
 </script>
+
+<style>
+    #reviews {
+        box-shadow: #f7f9f9;
+        padding: 20px;
+        width: initial;
+        background-color: rgb(255,255,255);
+    }
+</style>

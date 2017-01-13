@@ -15,6 +15,7 @@ namespace reviewIt.Core.Services
         private IRepository<Review> reviewRepository;
         private IRepository<BusinessProfile> businessRepository;
         private IRepository<BusinessCategory> businessCategoryRepository;
+        private IRepository<UserProfile> userRepository;
         private Review review;
 
         public ReviewService()
@@ -23,22 +24,22 @@ namespace reviewIt.Core.Services
             reviewRepository = new Repository<Review>(db);
             businessRepository = new Repository<BusinessProfile>(db);
             businessCategoryRepository = new Repository<BusinessCategory>(db);
+            userRepository = new Repository<UserProfile>(db);
             //<UserProfile>(db);
         }
 
-
-        public void CreateReview(string businessName,int businessId, string productName, int rating, string post, string owner,DateTime date)
+        public void CreateReview(string businessName, int businessId, int rating, string post, string owner, DateTime date)
         {
-         
+
             review = new Review
             {
-              BusinessId = businessId,
-              BusinessName = businessName,
-              ProductName=productName,
-              Rating=rating,
-              PostReview=post,
-              Createdby= owner,
-              CreatedDate = date,
+                BusinessId = businessId,
+                BusinessName = businessName,
+               
+                Rating = rating,
+                PostReview = post,
+                Createdby = owner,
+                CreatedDate = date,
             };
 
             reviewRepository.Insert(review);
@@ -46,13 +47,13 @@ namespace reviewIt.Core.Services
 
         }
 
-        public void UpdateReview(int id,int businessId, string productName, int rating, string post, string owner,DateTime date)
+        public void UpdateReview(int id, string Businessname,int businessId, int rating, string post, string owner, DateTime date)
         {
             review = new Review
             {
-                ReviewId=id,
+                ReviewId = id,
                 BusinessId = businessId,
-                ProductName = productName,
+                 BusinessName = Businessname,
                 Rating = rating,
                 PostReview = post,
                 Createdby = owner,
@@ -63,13 +64,11 @@ namespace reviewIt.Core.Services
             db.SaveChanges();
 
         }
-
         public void DeleteReview(int reviewID)
         {
             reviewRepository.Delete(new Review { ReviewId = reviewID });
             db.SaveChanges();
         }
-
         public IEnumerable<ReviewViewModel> GetAllReview()
         {
             IEnumerable<ReviewViewModel> data = (from s in reviewRepository.Get()
@@ -81,23 +80,28 @@ namespace reviewIt.Core.Services
                                                      BusinessId = s.BusinessId,
                                                      PostReview = s.PostReview,
                                                      Rating = s.Rating,
-                                                     Createdby =s.Createdby,
+                                                     Createdby = s.Createdby,
+                                                     CreatedDate = s.CreatedDate,
                                                  }).AsEnumerable();
             return data;
         }
-
         public IEnumerable<ReviewViewModel> GetAllReviewByBusinessId(int id)
         {
             IEnumerable<ReviewViewModel> data = (from s in reviewRepository.Get()
                                                  where s.BusinessId == id
+                                                 join d in userRepository.Get() on s.Createdby equals d.Name                                                   
+                                                  
                                                  // join d in dropDownTypeRepository.Get() on s.DropDownTypeID equals d.DropDownTypeID
                                                  select new ReviewViewModel
                                                  {
                                                      ReviewId = s.ReviewId,
                                                      BusinessId = s.BusinessId,
+                                                     BusinessName = s.BusinessName,
+                                                     UserImage = d.ImageName,
                                                      PostReview = s.PostReview,
                                                      Rating = s.Rating,
                                                      Createdby = s.Createdby,
+                                                     CreatedDate = s.CreatedDate,
                                                  }).AsEnumerable();
             return data;
         }
@@ -106,16 +110,20 @@ namespace reviewIt.Core.Services
         {
             IEnumerable<ReviewViewModel> data = (from s in reviewRepository.Get()
                                                  where s.Createdby == user
+                                                 join d in userRepository.Get() on s.Createdby equals d.Name                                                   
+                                                      
                                                  // join d in dropDownTypeRepository.Get() on s.DropDownTypeID equals d.DropDownTypeID
                                                  select new ReviewViewModel
                                                  {
                                                      ReviewId = s.ReviewId,
                                                      BusinessId = s.BusinessId,
-                                                     BusinessName =s.BusinessName,
-                                                     ProductName=s.ProductName,
+                                                     BusinessName = s.BusinessName,
+                                                     UserImage = d.ImageName,
+                                                    
                                                      PostReview = s.PostReview,
                                                      Rating = s.Rating,
                                                      Createdby = s.Createdby,
+                                                     CreatedDate = s.CreatedDate,
                                                  }).AsEnumerable();
             return data;
         }
@@ -130,72 +138,70 @@ namespace reviewIt.Core.Services
                                         BusinessId = s.BusinessId,
                                         PostReview = s.PostReview,
                                         Rating = s.Rating,
-                                        ProductName=s.ProductName,
-                                        Createdby=s.Createdby
+                                        
+                                        Createdby = s.Createdby
                                     }).SingleOrDefault();
             return data;
         }
-
-
         public IEnumerable<ReviewViewModel> getCategoryWiseRating()
         {
-           
-            IEnumerable<ReviewViewModel> data = (from s in reviewRepository.Get()                                                
+
+            IEnumerable<ReviewViewModel> data = (from s in reviewRepository.Get()
                                                  join d in businessRepository.Get() on s.BusinessName equals d.BusinessName
                                                  join c in businessCategoryRepository.Get() on d.CategoryId equals c.CategoryId
                                                  select new ReviewViewModel
                                                  {
-                                                  
-                                                  ReviewId= s.ReviewId,
-                                                  BusinessName = s.BusinessName,
-                                                  CategoryName = c.CategoryName,
-                                                  Rating= s.Rating,
-                                                  //star5 = reviewRepository.Get().Count(t => t.Rating == 5 && CategoryName == c.CategoryName),
+
+                                                     ReviewId = s.ReviewId,
+                                                     BusinessName = s.BusinessName,
+                                                     CategoryName = c.CategoryName,
+                                                     Rating = s.Rating,
+                                                     //star5 = reviewRepository.Get().Count(t => t.Rating == 5 && CategoryName == c.CategoryName),
                                                  }).AsEnumerable();
 
-          
+
             var categoryName = db.BusinessCategory.Select(p => p.CategoryName);
-           // double fiveStar, fourStar, threeStar, twoStar, oneStar;
+            // double fiveStar, fourStar, threeStar, twoStar, oneStar;
             int countReview;
             string CategoryName;
             var list = new List<ReviewViewModel>();
 
             foreach (var item in categoryName)
             {
-              
+
                 CategoryName = item;
                 countReview = data.Count(t => t.CategoryName == item);
-              //  fiveStar = data.Count(t => t.Rating == 5 && t.CategoryName == item);
-               // fourStar = data.Count(t => t.Rating == 4 && t.CategoryName == item);
-               // threeStar = data.Count(t => t.Rating == 3 && t.CategoryName == item);
-             //   twoStar = data.Count(t => t.Rating == 2 && t.CategoryName == item);
-               // oneStar = data.Count(t => t.Rating == 1 && t.CategoryName == item);
-                ReviewViewModel data1= new ReviewViewModel{
-                 CategoryName = CategoryName,
-                  TotalReview = countReview,             
+                //  fiveStar = data.Count(t => t.Rating == 5 && t.CategoryName == item);
+                // fourStar = data.Count(t => t.Rating == 4 && t.CategoryName == item);
+                // threeStar = data.Count(t => t.Rating == 3 && t.CategoryName == item);
+                //   twoStar = data.Count(t => t.Rating == 2 && t.CategoryName == item);
+                // oneStar = data.Count(t => t.Rating == 1 && t.CategoryName == item);
+                ReviewViewModel data1 = new ReviewViewModel
+                {
+                    CategoryName = CategoryName,
+                    TotalReview = countReview,
                 };
                 list.Add(data1);
-                
+
             }
 
-             
-                return list;
-            }
 
+            return list;
+        }
 
         public ReviewViewModel getCategoryWiseRatingWithinDateRange(string BusinessName, int year)
         {
 
             IEnumerable<ReviewViewModel> data = (from s in reviewRepository.Get()
                                                  where s.CreatedDate.Year == year && s.BusinessName == BusinessName
-                                                 
+
                                                  //join d in businessRepository.Get() on s.BusinessName equals d.BusinessName
                                                  //join c in businessCategoryRepository.Get() on d.CategoryId equals c.CategoryId
                                                  select new ReviewViewModel
                                                  {
                                                      month = s.CreatedDate.Month,
-                                                     Rating= s.Rating,
-                                                     
+                                                     Rating = s.Rating,
+
                                                  }).AsEnumerable();
 
 
@@ -220,38 +226,33 @@ namespace reviewIt.Core.Services
                                              //join c in businessCategoryRepository.Get() on d.CategoryId equals c.CategoryId
                                              select new ReviewViewModel
                                              {
-                                             Jan = jan,
-                                             Feb = feb,
-                                             Mar = mar,
-                                             Apr = apr,
-                                             May = may,
-                                             June = jun,
-                                             July = jul,
-                                             Aug = aug,
-                                             Sep =sep,
-                                             Oct = oct,
-                                             Nov = nov,
-                                             Dec = dec
+                                                 Jan = jan,
+                                                 Feb = feb,
+                                                 Mar = mar,
+                                                 Apr = apr,
+                                                 May = may,
+                                                 June = jun,
+                                                 July = jul,
+                                                 Aug = aug,
+                                                 Sep = sep,
+                                                 Oct = oct,
+                                                 Nov = nov,
+                                                 Dec = dec
 
                                              }).FirstOrDefault();
             return monthWiseData;
-        } 
-          
+        }
 
-
-
-
-        //Calender Chart
-
+        //Calender Char
         public IEnumerable<ReviewViewModel> getMonthDaywiseReview(string UserName, int year)
         {
 
             IEnumerable<ReviewViewModel> data = (from s in reviewRepository.Get()
                                                  where s.CreatedDate.Year == year && s.Createdby == UserName
-                                               
+
                                                  //join d in businessRepository.Get() on s.BusinessName equals d.BusinessName
                                                  //join c in businessCategoryRepository.Get() on d.CategoryId equals c.CategoryId
-                                                 select new ReviewViewModel 
+                                                 select new ReviewViewModel
                                                  {
                                                      month = s.CreatedDate.Month,
                                                      day = s.CreatedDate.Day,
@@ -261,29 +262,76 @@ namespace reviewIt.Core.Services
 
             var data1 = (from s in db.Review
                          where s.CreatedDate.Year == year && s.Createdby == UserName
-                         group s by new {month = s.CreatedDate.Month,day = s.CreatedDate.Day} into d
-                         select new ReviewViewModel{
-                             month =    d.Key.month,
+                         group s by new { month = s.CreatedDate.Month, day = s.CreatedDate.Day } into d
+                         select new ReviewViewModel
+                         {
+                             month = d.Key.month,
                              day = d.Key.day,
                              Rating = d.Count(),
                          });
-          //var data1 =  data.GroupBy(r => r.CreatedDate.Date, r => r.CreatedDate.Month).Select(r=>r.Count(r));
-                           
-                            
-                            
+            //var data1 =  data.GroupBy(r => r.CreatedDate.Date, r => r.CreatedDate.Month).Select(r=>r.Count(r));
+
+
+
 
             return data1;
-        } 
+        }
+
+        public IEnumerable<ReviewViewModel> getBusinessRanking(string businessCategory)
+        {
+
+           IEnumerable< ReviewViewModel> data = (from s in reviewRepository.Get()
+                                                 join d in businessRepository.Get() on s.BusinessName equals d.BusinessName
+                                                 join c in businessCategoryRepository.Get() on d.CategoryId equals c.CategoryId
+                                                 where c.CategoryName == businessCategory
+                                                 select new ReviewViewModel
+                                                 {
+
+                                                     //ReviewId = s.ReviewId,
+                                                     BusinessName = s.BusinessName,
+                                                     //CategoryName = c.CategoryName,
+                                                     Rating =  s.Rating, 
+                                                     //star5 = reviewRepository.Get().Count(t => t.Rating == 5 && CategoryName == c.CategoryName),
+                                                 }).AsEnumerable();
+
+           int totalBusiness = data.Select(m => m.BusinessName).Distinct().Count();
+           if (totalBusiness != 0)
+           {
+               var meanRating = data.Average(s => s.Rating);
+
+               int totalVotes = data.Count();
+
+               int minVotes = totalVotes / totalBusiness;
+               var BusinessName = data.Select(m => m.BusinessName).Distinct();
+               var list = new List<ReviewViewModel>();
+
+               foreach (var item in BusinessName)
+               {
+                   double avgRating = db.Review.Where(s => s.BusinessName == item).Average(s => s.Rating);
+                   double noOfVotes = db.Review.Where(s => s.BusinessName == item).Count();
+
+                   double upperValue = ((avgRating * noOfVotes) + (minVotes * meanRating));
+                   double lowerValue = noOfVotes + minVotes;
+                   double rankingValue = upperValue / lowerValue;
+
+                   ReviewViewModel data1 = new ReviewViewModel
+                   {
+                       BusinessName = item,
+                       ranking = rankingValue.ToString("0.00"),
+                   };
+                   if (noOfVotes >= minVotes)
+                   {
+                       list.Add(data1);
+                   }
+               }
 
 
-
-
-
-
-
-
+               return list;
+           }
+           return null;
         }
     }
+}
 
     
 

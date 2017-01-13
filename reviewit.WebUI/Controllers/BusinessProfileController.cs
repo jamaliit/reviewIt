@@ -3,6 +3,7 @@ using reviewIt.Core.ViewModels;
 using reviewIt.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -17,6 +18,7 @@ namespace reviewIt.WebUI.Controllers
         private MailController mail = new MailController();
         private CommonController commonController = new CommonController();
         private BusinessProfileService businessProfileService = new BusinessProfileService();
+        private AdvertisementService advertisementService = new AdvertisementService();
         // GET: UserProfile
         public ActionResult Index()
         {
@@ -30,8 +32,14 @@ namespace reviewIt.WebUI.Controllers
             return View(businessProfiles);
         }
 
+        public ActionResult PartialViewBusinessandAdvertisement(string user)
+        {
 
-
+            var BusinessandAdvertisementViewModel = new BusinessandAdvertisementViewModel();
+            BusinessandAdvertisementViewModel.advertisement = advertisementService.GetAllAdvertisement(user).OrderByDescending(x =>x.CreatedDate);
+            BusinessandAdvertisementViewModel.business = businessProfileService.GetOwnBusinessProfileByID(user);
+            return View(BusinessandAdvertisementViewModel);
+        }
         public ActionResult Create()
         {
             return View();
@@ -45,9 +53,10 @@ namespace reviewIt.WebUI.Controllers
         [HttpPost]
         public ActionResult RequestforBusinessAccount(BusinessProfileViewModel businessProfileVM)
         {
-            var RedirectUrl = "/BusinessProfile/Index";
-            bool isBusiness = false;
-             if(Membership.FindUsersByName(businessProfileVM.BusinessName).Count == 1)
+
+            if (ModelState.IsValid)
+            {
+            if(Membership.FindUsersByName(businessProfileVM.BusinessName).Count == 1)
             {
                 ModelState.AddModelError("", "Business name already exists");
                 ViewBag.businessCategoryList = commonController.GetAllBusinessCategory();             
@@ -59,20 +68,22 @@ namespace reviewIt.WebUI.Controllers
                  ViewBag.businessCategoryList = commonController.GetAllBusinessCategory();
                  return View(businessProfileVM);
              }
-             else  if (ModelState.IsValid)
-            {
-                businessProfileService.CreateBusinessprofile(businessProfileVM);
-                return Json(RedirectUrl, JsonRequestBehavior.AllowGet);
-            }
             else
             {
-                RedirectUrl = null;
-                return Json(RedirectUrl, JsonRequestBehavior.AllowGet);
+                businessProfileService.CreateBusinessprofile(businessProfileVM);
+                return RedirectToAction("BusinessView", "Account");
+            }
+        }
+            else
+            {
+                ViewBag.businessCategoryList = commonController.GetAllBusinessCategory();
+                return View();
             }
         }
 
         public ActionResult Edit(int id)
         {
+            ViewBag.businessCategoryList = commonController.GetAllBusinessCategory();
             BusinessProfileViewModel businessProfiles = businessProfileService.GetBusinessProfileByID(id);
             if (businessProfiles == null)
             {
@@ -84,17 +95,47 @@ namespace reviewIt.WebUI.Controllers
         [HttpPost]
         public ActionResult Edit(BusinessProfileViewModel businessProfileVM)
         {
-            var RedirectUrl = "/BusinessProfile/IndividualBusinessProfile";
             if (ModelState.IsValid)
             {
-                businessProfileService.UpdateBusinessProfile(businessProfileVM);
-                return Json(RedirectUrl, JsonRequestBehavior.AllowGet);
+                var fileName = "";
+                if (businessProfileVM.ImageName == null)
+                {
+
+                    if (businessProfileVM.File == null)
+                    {
+                        fileName = "Default.png";
+
+                    }
+                    else
+                    {
+
+                        fileName = Path.GetFileName(businessProfileVM.File.FileName);
+                        var path = Path.Combine(Server.MapPath("~/Uploads"), fileName);
+                        businessProfileVM.File.SaveAs(path);
+                    }
+                }
+                else
+                {
+                    fileName = businessProfileVM.ImageName;
+                }              
+                
+                businessProfileService.UpdateBusinessProfile(businessProfileVM,fileName);
+                return RedirectToAction("IndividualBusinessProfile", "BusinessProfile", new { user = User.Identity.Name });
             }
             else
             {
-                RedirectUrl = null;
-                return Json(RedirectUrl, JsonRequestBehavior.AllowGet);
+                return RedirectToAction("UserOwnProfile", "UserProfile", new { user = User.Identity.Name });
             }
+        }
+
+        public ActionResult UploadProfilePicture(int id)
+        {
+            BusinessProfileViewModel business = businessProfileService.GetBusinessProfileByID(id);
+            if (business == null)
+            {
+                return HttpNotFound();
+            }
+            return View(business);
         }
 
         public ActionResult Details(int id)
@@ -126,78 +167,32 @@ namespace reviewIt.WebUI.Controllers
         //    return View();
         //}
 
+        [Authorize(Roles="Admin")]
         public ActionResult ApproveRequest()
         {
             IEnumerable<BusinessProfileViewModel> data = businessProfileService.GetAllBusinessprofile();
             return View(data);
         }
-       
+
         [HttpPost]
         public ActionResult ApproveRequest(int Businessid)
         {
             //MembershipCreateStatus createStatus;
 
             BusinessProfileViewModel businessProfiles = businessProfileService.GetRequestedBusniessbyId(Businessid);
+            businessProfileService.UpdateBusinessProfile(businessProfiles, "Default.png");
             if (businessProfiles == null)
             {
                 return HttpNotFound();
             }
-           // string password = Membership.GeneratePassword(6, 1);
 
-            // MembershipUser newUser = Membership.CreateUser(businessProfiles.BusinessName,password,businessProfiles.Email,null, null, true, null, out createStatus);
-
-            //if (createStatus == MembershipCreateStatus.Success)
-            //{
-                string receiverMail, mailSubject, mailBody;
-                receiverMail = businessProfiles.Email;
-                mailSubject = "reviewIt Registration Complete";
-                mailBody = "Url: http://localhost:59080/Account/BusinessRegister/" +@Businessid;
-                // +@businessProfiles.BusinessName + " <br/><br/><br/> Password:" + @password + " <br/><br/><br/> You can log in by using your user name or your Email and given password. If you want to change your password , log in and then click on Change password.<br/><br/><br/> Regards <br/><br/><br/> reviewIt Authority. ";
-                mail.sendMail(receiverMail, mailSubject, mailBody);
-                return RedirectToAction("ApproveRequest");
-            //}
-            //else
-            //{
-            //    ViewBag.Error = ErrorCodeToString(createStatus);
-            //}
-            
-            //return View("ApproveRequest");
-        }
-
-        //private static string ErrorCodeToString(MembershipCreateStatus createStatus)
-        //{
-        //    switch (createStatus)
-        //    {
-        //        case MembershipCreateStatus.DuplicateUserName:
-        //            return "User name already exists. Please enter a different user name.";
-
-        //        case MembershipCreateStatus.DuplicateEmail:
-        //            return "A user name for that e-mail address already exists. Please enter a different e-mail address.";
-
-        //        case MembershipCreateStatus.InvalidPassword:
-        //            return "The password provided is invalid. Please enter a valid password value.";
-
-        //        case MembershipCreateStatus.InvalidEmail:
-        //            return "The e-mail address provided is invalid. Please check the value and try again.";
-
-        //        case MembershipCreateStatus.InvalidAnswer:
-        //            return "The password retrieval answer provided is invalid. Please check the value and try again.";
-
-        //        case MembershipCreateStatus.InvalidQuestion:
-        //            return "The password retrieval question provided is invalid. Please check the value and try again.";
-
-        //        case MembershipCreateStatus.InvalidUserName:
-        //            return "The user name provided is invalid. Please check the value and try again.";
-
-        //        case MembershipCreateStatus.ProviderError:
-        //            return "The authentication provider returned an error. Please verify your entry and try again. If the problem persists, please Home your system administrator.";
-
-        //        case MembershipCreateStatus.UserRejected:
-        //            return "The user creation request has been canceled. Please verify your entry and try again. If the problem persists, please Home your system administrator.";
-
-        //        default:
-        //            return "An unknown error occurred. Please verify your entry and try again. If the problem persists, please Home your system administrator.";
-        //    }
-        //}
+            string receiverMail, mailSubject, mailBody;
+            receiverMail = businessProfiles.Email;
+            mailSubject = "reviewIt Registration";
+            mailBody = "Dear" + @businessProfiles.UserName + ",<br/><br/> Your request has been accepted.Please complete your registration. Url: http://localhost:59080/Account/BusinessRegister/" + @Businessid + "<br/><br/> Regards <br/><br/> reviewIt Authority";
+            // +@businessProfiles.BusinessName + " <br/><br/><br/> Password:" + @password + " <br/><br/><br/> You can log in by using your user name or your Email and given password. If you want to change your password , log in and then click on Change password.<br/><br/><br/> Regards <br/><br/><br/> reviewIt Authority. ";
+            mail.sendMail(receiverMail, mailSubject, mailBody);
+            return RedirectToAction("ApproveRequest");
+        }     
     }
 }

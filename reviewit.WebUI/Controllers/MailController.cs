@@ -23,7 +23,7 @@ namespace reviewIt.WebUI.Controllers
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
                 client.UseDefaultCredentials = false;
                 mail.IsBodyHtml = true;
-                client.Credentials = new NetworkCredential("jamaliit25@gmail.com", "776052856");
+                client.Credentials = new NetworkCredential("noreplyreviewIt@gmail.com", "34261038");
                 client.Host = "smtp.gmail.com";
                 client.EnableSsl = true;
                 mail.Subject = subject;

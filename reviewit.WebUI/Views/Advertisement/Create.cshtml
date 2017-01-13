@@ -2,42 +2,74 @@
 @{
     ViewBag.Title = "Create";
 }
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<br />
+<h3 style="text-align:center">Add a Post</h3>
+<br />
+@Html.ValidationSummary(true, "Operation was unsuccessful. Please correct the errors and try again.")
 
-<h2>Create</h2>
-
-@using (Html.BeginForm("RequestforBusinessAccount", "BusinessProfile", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("Create", "Advertisement", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
 {
     <h2 class="form-signin-heading text-center"></h2>
-    @Html.ValidationSummary()
-    <div class="form-group">
-        @Html.TextBoxFor(m => m.BusinessName, new { @class = "form-control", @placeholder = "Business Name" })
-        @Html.ValidationMessageFor(m => m.BusinessName)
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    <div class="col-lg-4 ">
+        @Html.ActionLink("Back", "IndividualBusinessProfile", "BusinessProfile", new { user = User.Identity.Name }, new { @class = "btn btn-success" })
     </div>
+    <div class="col-lg-5 ">
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Title, new { @class = "form-control", @placeholder = "Title" })
+            @Html.ValidationMessageFor(m => m.Title)
+        </div>
 
-    <div class="form-group">
-        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "Your Name" })
-        @Html.ValidationMessageFor(m => m.UserName)
-    </div>
-    <div class="form-group">
-        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email" })
-        @Html.ValidationMessageFor(m => m.Email)
-    </div>
+        <div class="form-group">
+            @Html.TextAreaFor(m => m.About, new { @class = "form-control", @placeholder = "About" })
+            @Html.ValidationMessageFor(m => m.About)
+        </div>
 
-    <div class="form-group">
-        @Html.TextBoxFor(m => m.City, new { @class = "form-control", @placeholder = "Location" })
-        @Html.ValidationMessageFor(m => m.City)
-    </div>
-
-
-    <div class="form-group">
-        @Html.TextBoxFor(m => m.About, new { @class = "form-control", @placeholder = "About" })
-        @Html.ValidationMessageFor(m => m.About)
-    </div>
-
-    <div class="form-group">
-        @Html.DropDownListFor(m => m.CategoryId, new SelectList(ViewBag.businessCategoryList, "Value", "Text"))
-    </div>
-    <div class="form-group">
-        <input type="submit" class="btn btn-block btn-primary" value="Submit" />
+        <div class="editor-field">
+            <input type="file" name="File" id="file" />
+            <br />
+            <img id="imgPreview" alt="" src="" width="300" height="250" />
+        </div>
+        <br/><br/>
+        <div class="form-group">
+            <input type="submit" class="btn btn-round btn-primary"  value="Submit" />
+        </div>
     </div>
 }
+
+<script>
+
+    $(document).ready(function () {
+        $('#file').on('change', function () {
+            // alert("ddd");
+            $("img#imgPreview").attr('src', ''); //First remove the image src if already selected
+            //To check if uploaded file is image only..
+            var fileExtension = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+            if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                alert("Only image files are allowed!");
+                return false;
+            }
+
+
+            //To check 'FileReader' is supported by browser or not..
+            if (typeof (FileReader) != 'undefined') {
+                var frImage = new FileReader();
+                frImage.onload = function (e) {
+                    $("img#imgPreview").attr('src', e.target.result);
+                }
+                frImage.readAsDataURL($(this)[0].files[0]);
+            } else {
+                alert("Your browser does not support FileReader!");
+            }
+        });
+
+    });
+
+</script>

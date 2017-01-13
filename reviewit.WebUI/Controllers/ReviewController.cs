@@ -37,13 +37,13 @@ namespace reviewIt.WebUI.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Create(int businessId,string productName,int rating,string post,string owner,DateTime date)
+        public ActionResult Create(int businessId,int rating,string post,string owner,DateTime date)
         {
             var RedirectUrl = "/Review/Index";
             if (ModelState.IsValid)
             {
                 string Businessname = commonController.GetBusinessName(businessId);
-                reviewService.CreateReview(Businessname, businessId,productName,rating,post,owner,date);
+                reviewService.CreateReview(Businessname, businessId,rating,post,owner,date);
                 return Json(RedirectUrl, JsonRequestBehavior.AllowGet);
             }
             else
@@ -65,12 +65,13 @@ namespace reviewIt.WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(int id,int businessId, string productName, int rating, string post, string owner,DateTime date)
+        public ActionResult Edit(int id,int businessId, int rating, string post, string owner,DateTime date)
         {
             var RedirectUrl = "/Review/Index";
             if (ModelState.IsValid)
             {
-                reviewService.UpdateReview(id, businessId, productName, rating, post, owner,date);
+                string Businessname = commonController.GetBusinessName(businessId);
+                reviewService.UpdateReview(id, Businessname,businessId, rating, post, owner, date);
                 return Json(RedirectUrl, JsonRequestBehavior.AllowGet);
             }
             else

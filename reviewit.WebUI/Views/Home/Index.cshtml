@@ -1,134 +1,77 @@
 ﻿
+<br/>
 <h2>Index</h2>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<link href="~/Content/rateit.css" rel="stylesheet" />
 <script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
 
 @*<img src="@Url.Action("DrawChartwithHtmlHelper")" alt="Drawing chart with HTML Helper" />*@
 
+
+
+<br/><br/>
+
+<p>
+@if ( User.IsInRole("Admin"))
+            {
+
+    @Html.ActionLink("Business Category Wise Review Chart", "CategoryWiseRating", "Home",null, new { @class = "btn btn-primary" })
+    <span style="padding-left:20px">
+        @Html.ActionLink("Monthly Rating overview", "CategoryWiseRatingWithinDate", "Home", null, new { @class = "btn btn-primary" })
+    </span>
+            }
+    <p>
+<br/>
+@if (User.IsInRole("Admin"))
+{
 <div id="chartdiv" style="width: 800px; height: 500px;">
 </div>
+}
 
-<button id="btnSubmit"  >UservsUserReviews
-</button>
- 
+
 
 <script type="text/javascript">
+
     google.charts.load("current", { packages: ["corechart"] });
-    
-  
+
+    //$('#btnSubmit').click(function () {
+
         $(document).ready(function () {
-            $.ajax(
-                {
-                    url: '/Home/OverallRatingChart',
-                    type: 'get',
-                    dataType: "json",
 
-                    success: successFunc,
-                    error: errorFunc
-                });
+        $.ajax(
+              {
+                  url: '/Home/TotalUservsNoOfUserwhoGivesReviews',
+                  type: 'get',
+                  dataType: "json",
+                  success: successFunc,
+                  error: errorFunc
+              });
 
-            function successFunc(datachart) {
+        function successFunc(datachart) {
+            var data = google.visualization.arrayToDataTable([
+            ['Element', 'Density', { role: 'annotation' }],
+             ['#UserWhodoesNotGiveReviews', datachart.NoOfUserWhodoesNotGiveReviews, datachart.NoOfUserWhodoesNotGiveReviews],                              // More typically this would be done using a
+              ['#UserGivesReviews', datachart.NoOfUserGiveReviews, datachart.NoOfUserGiveReviews],                           // formatter.
+            ]);
 
-                // alert(datachart.star1);
-                //var data = new google.visualization.DataTable();
+            var options = {
+                'title': 'Overview',
+                'width': 800,
+                'height': 400,
+                bar: { groupWidth: "15%" }
+            };
+            var chart = new google.visualization.PieChart(document.getElementById("chartdiv"));
+            chart.draw(data, options);
+        }
 
-                //// Declare columns
-                //data.addColumn('string', 'Star');
-                //data.addColumn('number', 'How much?');
-
-                //// Add data.
-                //data.addRows([
-                //  ['Element', 'Density', { role: 'annotation' }],
-                //  ['5*', datachart.star5, datachart.star5],                              // More typically this would be done using a
-                //  ['4*', datachart.star4, datachart.star4],                           // formatter.
-                //  ['3*', datachart.star3, datachart.star3],
-                //  ['2*', datachart.star2, datachart.star2],
-                //  ['1*', datachart.star1, datachart.star1]
-                //]);
-
-                var data = google.visualization.arrayToDataTable([
-                ['Element', 'Density', { role: 'annotation' }],
-                 ['5*', datachart.star5, datachart.star5],                              // More typically this would be done using a
-                  ['4*', datachart.star4, datachart.star4],                           // formatter.
-                  ['3*', datachart.star3, datachart.star3],
-                 ['2*', datachart.star2, datachart.star2],
-                 ['1*', datachart.star1, datachart.star1]
-                ]);
-
-                //var view = new google.visualization.DataView(data);
-
-
-                var options = {
-                    'title': 'Overview',
-                    'width': 400,
-                    'height': 300,
-                    bar: { groupWidth: "15%" }
-                };
-                var chart = new google.visualization.BarChart(document.getElementById("chartdiv"));
-                chart.draw(data, options);
-            }
-
-            function errorFunc() {
-                alert('MVC controller call failed.');
-            }
-        });
-
-
-    
-        $('#btnSubmit').click(function () {
-            $.ajax(
-                {
-                    url: '/Home/TotalUservsNoOfUserwhoGivesReviews',
-                    type: 'get',
-                    dataType: "json",
-
-                    success: successFunc,
-                    error: errorFunc
-                });
-
-            function successFunc(datachart) {
-
-                // alert(datachart.star1);
-                //var data = new google.visualization.DataTable();
-
-                //// Declare columns
-                //data.addColumn('string', 'Star');
-                //data.addColumn('number', 'How much?');
-
-                //// Add data.
-                //data.addRows([
-                //  ['Element', 'Density', { role: 'annotation' }],
-                //  ['5*', datachart.star5, datachart.star5],                              // More typically this would be done using a
-                //  ['4*', datachart.star4, datachart.star4],                           // formatter.
-                //  ['3*', datachart.star3, datachart.star3],
-                //  ['2*', datachart.star2, datachart.star2],
-                //  ['1*', datachart.star1, datachart.star1]
-                //]);
-
-                var data = google.visualization.arrayToDataTable([
-                ['Element', 'Density', { role: 'annotation' }],
-                 ['#UserWhodoesNotGiveReviews', datachart.NoOfUserWhodoesNotGiveReviews, datachart.NoOfUserWhodoesNotGiveReviews],                              // More typically this would be done using a
-                  ['#UserGivesReviews', datachart.NoOfUserGiveReviews, datachart.NoOfUserGiveReviews],                           // formatter.
-                 ]);
-
-                //var view = new google.visualization.DataView(data);
-
-
-                var options = {
-                    'title': 'Overview',
-                    'width': 800,
-                    'height': 400,
-                    bar: { groupWidth: "15%" }
-                };
-                var chart = new google.visualization.PieChart(document.getElementById("chartdiv"));
-                chart.draw(data, options);
-            }
-
-            function errorFunc() {
-                alert('MVC controller call failed.');
-            }
-        });
-    
+        function errorFunc() {
+           // alert('MVC controller call failed.');
+        }
+    });
 </script>

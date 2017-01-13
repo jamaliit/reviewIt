@@ -4,53 +4,64 @@
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="~/Scripts/Highcharts-4.0.1/js/highcharts.js"></script>
-
+<br/>
+<h3 style="text-align:center">Monthly Review No.</h3><br/>
 
 <div class="form-group">
-    @Html.DropDownListFor(m=>m.BusinessId, new SelectList(ViewBag.AllBusinessList, "Value", "Text"))
-    
-    <select id="year" name="year">
-        <script>
-            var myDate = new Date();
-            var year = myDate.getFullYear();
-            for (var i = 1900; i < year + 1; i++) {
-                document.write('<option value="' + i + '">' + i + '</option>');
-            }
-        </script>
+    <p style="text-align:center">
+        @if (User.IsInRole("Admin"))
+        {
+            @Html.DropDownListFor(m => m.BusinessId, new SelectList(ViewBag.AllBusinessList, "Text", "Text"))
+        }
+        else
+        {
+            <input type="text" id="BusinessId" value="@User.Identity.Name" readonly="true" hidden />
+            @*@Html.TextBoxFor(m => m.BusinessId, new {  @placeholder = @User.Identity.Name, @readonly = "readonly" })*@
+        }
+       Select Year: <select id="year" name="year">
+            <script>
+                var myDate = new Date();
+                var year = myDate.getFullYear();
+                for (var i = 2014; i < year + 1; i++) {
+                    document.write('<option value="' + i + '">' + i + '</option>');
+                }
+            </script>
 
-    </select>
-</div>
-<div class="form-group">
-    <input type="submit" onclick="submitRecord()" class="btn btn-block btn-primary" value="Submit" />
-</div>
+        </select>
+            &nbsp;&nbsp;  
+            <input type="submit" onclick="submitRecord()" class="btn-primary" value="Submit" />
 
+    </p>
+</div>
 <script> 
 
     function submitRecord(){
     
-        var businessId = $('#BusinessId').val();
+      
+        var businessName = $('#BusinessId').val();
+        
        // var post = $('#PostReview').val();
         var year = $('#year').val();
-       //alert(year)
-     
+     //  alert(year)
+       // alert(businessName)
         $.ajax({
             url: '@Url.Action("CategoryWiseRatingWithinDateRange", "Home")',
             type: 'post',
             data: {
-                businessId: businessId,
+                businessName: businessName,
                 year: year,
              
             },
             success: function (data) {
                 window.location.href = '@Url.Action("CategoryWiseRatingWithinDateRange", "Home")' + '?' +
                     $.param({
-                        businessId: businessId,
+                        businessName: businessName,
                         year: year
                     });
                // alert("data saved successfully")
             },
             error: function (data) {
-                alert("error occured")
+                alert("There is no review in your selected year")
             },
         });
         }

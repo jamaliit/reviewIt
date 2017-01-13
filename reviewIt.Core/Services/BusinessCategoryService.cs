@@ -1,4 +1,5 @@
 ﻿using CRM.Core.ViewModels;
+using reviewIt.Core.ViewModels;
 using reviewIt.Domain.Models;
 using reviewIt.Domain.Repositories;
 using System;
@@ -40,6 +41,20 @@ namespace CRM.Core.Services
         }
 
 
-      
+
+
+        public BusinessCategoryViewModel getBusinessCategoryName(int id)
+        {
+            BusinessCategoryViewModel data = (from s in businessCategoryRepository.Get()
+                                                   where s.CategoryId == id
+                                                   // join d in dropDownTypeRepository.Get() on s.DropDownTypeID equals d.DropDownTypeID
+                                                 select new BusinessCategoryViewModel
+                                                   {
+
+                                                     CategoryName = s.CategoryName,
+
+                                                   }).SingleOrDefault();
+            return data;
+        }
     }
 }
