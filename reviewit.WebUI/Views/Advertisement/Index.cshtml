@@ -1,0 +1,99 @@
+﻿@model IEnumerable<reviewIt.Core.ViewModels.AdvertisementViewModel>
+@{
+    ViewBag.Title = "Reviews";
+}
+<link href="~/Content/rateit.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<br/>
+<h3 style="text-align:center">All Advertisement for this Business</h3>
+
+
+
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <div id="advertise">
+            <div class="row">
+                <div class="col-lg-1" style="padding-right:0px;width:75px;">
+                    <img src="@Url.Content("~/Uploads/"+@item.BusinessImage)" style=" height:50px;width:50px;border:1px solid #021a40;" alt="" />
+                </div>
+                <div class="col-lg-6" style="padding:0px;">
+                    <h5 style="color:blue;">
+                        <a style="color:blue" href='@Url.Action("PartialViewBusinessandAdvertisement", "BusinessProfile", new { user = item.BusinessName }, null)'> @Html.DisplayFor(model => item.BusinessName)</a>
+                    </h5>
+                    @Html.DisplayFor(model => item.CreatedDate)
+                </div>
+
+<div class="col-lg-4">
+</div>
+
+<div class="col-lg-1">
+    @if (User.Identity.Name.Equals(item.BusinessName) && User.IsInRole("Business Owner"))
+                        {
+        <button class="btn btn-default dropdown-toggle" type="button" id="down">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" id="dropdown" aria-labelledby="dropdownMenu4">
+            <li><a href='@Url.Action("Edit", "Advertisement", new { id = @item.AdvertiseID }, null)'>Edit Post</a></li>
+            <li><a href='@Url.Action("Delete", "Advertisement", new { id = @item.AdvertiseID }, null)'>Delete Post</a></li>
+        </ul>
+
+    }   
+      </div>
+            </div>
+            <br />
+            <div>
+                Title:  @Html.DisplayFor(model => item.Title)
+            </div>
+            <div>
+                About:  @Html.DisplayFor(model => item.About)
+            </div><br/>
+            <div >
+                <img src="@Url.Content("~/Uploads/"+@item.FilePath)" style=" height:300px;width:400px; display:block;"  alt="" />
+            </div>
+
+        </div>
+        <br />
+    }
+}
+
+<style>
+    #advertise {
+        box-shadow: #f7f9f9;
+        padding: 20px;
+        width: initial;
+        background-color: rgb(255,255,255);
+    }
+
+</style>
+
+<script>
+    $(document).ready(function () {
+        $("#dropdown").hide();
+        $("#down").on({
+            //mouseenter: function () {
+            //    $("#dropdown").show();
+            //},
+            //mouseleave: function () {
+            //    $("#dropdown").hide();
+            //},
+            click: function () {
+                $("#dropdown").show();
+            }
+        });
+        $("#dropdown").on({
+            //mouseenter: function () {
+            //    $("#dropdown").show();
+            //},
+            mouseleave: function () {
+                $("#dropdown").hide();
+            },
+
+        });
+    });
+
+
+
+</script>

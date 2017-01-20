@@ -1,0 +1,193 @@
+﻿@model reviewIt.Core.ViewModels.BusinessProfileViewModel
+@{
+    ViewBag.Title = "BusinessProfile";
+}
+
+
+<link href="~/Content/rateit.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+
+<div>
+    <div class="row" id="business">
+        <br /><br /><br />
+        <div class="col-lg-3" style="padding:20px;">
+            <img src="@Url.Content("~/Uploads/" + @Model.ImageName) " style=" height:200px;width:200px; border:1px solid #021a40;" alt="Image" /><br />
+            <br />
+            &nbsp;&nbsp;
+            @if (User.Identity.Name.Equals(Model.BusinessName) && User.IsInRole("Business Owner"))
+            {
+                <a href='@Url.Action("UploadProfilePicture", "BusinessProfile", new { id = Model.BusinessId }, null)'>Update Profile Picture</a>
+
+            }
+        </div>
+
+        <div class="col-lg-5">
+            <h3 style="color: darkblue; margin-top:50%">
+                <a style="color:darkblue" href='@Url.Action("PartialViewBusinessandAdvertisement", "BusinessProfile", new { user = Model.BusinessName }, null)'>
+                @Model.BusinessName</a>
+                <a href="#chartdiv">(<i class="fa fa-star-half-empty"></i> @Model.OverallRating/5</a>)
+            </h3>
+        </div>
+
+
+        <div class="col-lg-4">
+            <ul class="list-group" id="">
+
+                @if (User.Identity.Name.Equals(Model.BusinessName) && User.IsInRole("Business Owner"))
+                {
+                    <li class="list-group-item"> @Html.ActionLink("Add a Post", "Create", "Advertisement", null, new { @class = "btn btn-block" })</li>
+
+                }
+                <li class="list-group-item">
+                    @Html.ActionLink("All Reviews", "AllBusinessReview", "Review", new { id = @Model.BusinessId }, new { @class = "btn btn-block" })
+                </li>
+                <li class="list-group-item">
+                    @Html.ActionLink("All Post", "Index", "Advertisement",  new { user = @Model.BusinessName }, new { @class = "btn btn-block" })
+                </li>
+                @if (User.Identity.Name.Equals(Model.BusinessName) && User.IsInRole("Business Owner"))
+                {
+                    <li class="list-group-item">
+                        @Html.ActionLink("Monthly Rating overview", "CategoryWiseRatingWithinDate", "Home", null, new { @class = "btn btn-block" })
+                    </li>
+                }
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-5" id="col5">
+            <ul class="list-group" id="listGroup">
+                <li class="list-group-item"> <i class="fa fa-user"></i> @Model.BusinessName</li>
+                <li class="list-group-item"> <i class="fa fa-envelope-square"></i> @Model.Email</li>
+                <li class="list-group-item"><i class="fa fa-location-arrow"></i> @Model.Location,@Model.City</li>
+                <li class="list-group-item"><i class="fa fa-phone-square"></i> @Model.Phone</li>
+                <li class="list-group-item"><i class="glyphicon glyphicon-globe"></i> @Model.Website</li>
+                <li class="list-group-item"><i class="fa fa-star-half-full"></i> @Model.TotalReview Reviews</li>
+                <li class="list-group-item"><i class="fa fa-institution"></i> @Model.Categories</li>
+                <li class="list-group-item"><i class="fa fa-info-circle"></i> @Model.About</li>
+
+                @if (User.Identity.Name.Equals(Model.BusinessName) && User.IsInRole("Business Owner"))
+                {
+                    <li class="list-group-item center">@Html.ActionLink("Update Business Info", "Edit", new { id = @Model.BusinessId }, new { @class = "btn btn-success" })  </li>
+                }
+            </ul>
+        </div>
+        <div class="col-lg-7" id="col7">
+            <div id="chartdiv" style="box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    google.charts.load("current", { packages: ["corechart"] });
+
+
+    $(document).ready(function () {
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+        var user = getParameterByName('user');
+        // alert(user);
+
+        $.ajax(
+            {
+                url: '/Home/OverallRatingChartforBusiness',
+                type: 'get',
+                dataType: "json",
+                data: {
+                    user: user,
+                },
+                success: successFunc,
+                error: errorFunc
+            });
+
+        function successFunc(datachart) {
+
+            // alert(datachart.star1);
+            //var data = new google.visualization.DataTable();
+
+            //// Declare columns
+            //data.addColumn('string', 'Star');
+            //data.addColumn('number', 'How much?');
+
+            //// Add data.
+            //data.addRows([
+            //  ['Element', 'Density', { role: 'annotation' }],
+            //  ['5*', datachart.star5, datachart.star5],                              // More typically this would be done using a
+            //  ['4*', datachart.star4, datachart.star4],                           // formatter.
+            //  ['3*', datachart.star3, datachart.star3],
+            //  ['2*', datachart.star2, datachart.star2],
+            //  ['1*', datachart.star1, datachart.star1]
+            //]);
+
+            var data = google.visualization.arrayToDataTable([
+            ['Element', 'Density', { role: 'annotation' }],
+             ['5*', datachart.star5, datachart.star5],                              // More typically this would be done using a
+              ['4*', datachart.star4, datachart.star4],                           // formatter.
+              ['3*', datachart.star3, datachart.star3],
+             ['2*', datachart.star2, datachart.star2],
+             ['1*', datachart.star1, datachart.star1]
+            ]);
+
+            //var view = new google.visualization.DataView(data);
+
+
+            var options = {
+                'title': 'Overview',
+                'width': 562,
+                'height': 370,
+                 bar: { groupWidth: "15%" }
+            };
+            var chart = new google.visualization.BarChart(document.getElementById("chartdiv"));
+            chart.draw(data, options);
+        }
+
+        function errorFunc() {
+            alert('MVC controller call failed.');
+        }
+    });
+</script>
+
+
+<style>
+    #business {
+        background-color: #f7f9f9;
+        padding-top: 30px;
+    }
+
+    #col5 {
+        padding-left: -20px;
+        margin-top: 15px;
+        background-color: rgb(255,255,255);
+    }
+
+    #listGroup {
+        margin-top: 20px;
+        margin-bottom: 5px;
+        padding-left: -70px;
+        width: 100%;
+        float: left;
+        box-shadow: #f7f9f9;
+        background-color: rgb(255,255,255);
+    }
+
+    #chartdiv {
+        margin-top: 15px;
+    }
+</style>

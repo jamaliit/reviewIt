@@ -1,0 +1,88 @@
+﻿@model IEnumerable<reviewIt.Core.ViewModels.BusinessProfileViewModel>
+@{
+    ViewBag.Title = "ApproveRequest";
+}
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<h2>Request for Approval</h2>
+
+
+<div>
+    @ViewBag.Error
+</div>
+<table class="table">    
+        <tr>
+        
+            <th>Business Name</th>
+            <th>Email</th>
+            <th>City</th>
+            <th>About</th>
+            <th>User name</th>
+            <th>Categories</th>
+            <th>About</th>
+        </tr>
+    @if(Model!=null)
+    {
+        foreach(var item in Model)
+        {
+           <tr>        
+                
+                <td>
+                    @Html.DisplayFor(model => item.BusinessName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.City)
+                </td>
+               <td>
+                   @Html.DisplayFor(model => item.Website)
+               </td>
+               <td>
+                   @Html.DisplayFor(model => item.UserName)
+               </td>
+               <td>
+                   @Html.DisplayFor(model => item.Categories)
+               </td>
+                <td>
+                    @Html.DisplayFor(model => item.About)
+                </td> 
+               @using (Html.BeginForm("ApproveRequest", "BusinessProfile", new { Businessid = item.BusinessId }, FormMethod.Post, new { }))
+  {
+                <td>
+                    <button type="submit" class="btn btn-default" id="btnApprove"> Approve </button>
+                    @*@Html.ActionLink("Approve", "ApproveRequest", new { Businessid = item.BusinessId},null)*@
+                </td> 
+               }        
+            </tr>        
+        }
+        }
+</table>
+
+@*<script>
+   
+    $(document).ready(function () {
+        $("#btnApprove").click(function (e) {
+            alert("dscds");
+            e.preventDefault();
+            var id = $("#btnApprove").attr('value');
+           // var id = $(this).data("id");
+            alert(id);
+            $.ajax({
+                url: '/BusinessProfile/ApproveRequest/',
+                type: 'Post',
+                data: {
+                    id: id
+                },
+                success: function () {
+                },
+                error: function () {
+                }
+            });
+        });
+    });
+</script>*@

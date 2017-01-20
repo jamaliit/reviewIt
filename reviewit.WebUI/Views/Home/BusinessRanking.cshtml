@@ -1,0 +1,37 @@
+﻿@model IEnumerable<reviewIt.Core.ViewModels.ReviewViewModel>
+@{
+    ViewBag.Title = "Ranking";
+}
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+
+<br/>
+<h3 style="text-align:centers">Top Businesses</h3>
+<br/>
+
+
+<table class="table">
+    <tr>
+       <th>Business name</th>
+        <th>Ranking Value</th>
+    </tr>
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a style="color:darkblue" href='@Url.Action("PartialViewBusinessandAdvertisement", "BusinessProfile", new { user = item.BusinessName }, null)'>
+                        @Html.DisplayFor(model => item.BusinessName)</a>
+</td>
+                <td>
+                    @Html.DisplayFor(model => item.ranking)
+                </td>
+            </tr>
+        }
+    }
+</table>
+

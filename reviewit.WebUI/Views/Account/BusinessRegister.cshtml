@@ -1,0 +1,47 @@
+﻿@model reviewIt.WebUI.Models.RegisterModel
+
+@{
+    ViewBag.Title = "Business Registration";
+}
+
+<h2>Business Registration</h2>
+
+<div class="col-md-offset-4 col-md-4">
+    @Html.ValidationSummary(true, "Account creation was unsuccessful. Please correct the errors and try again.")
+
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        <h2 class="form-signin-heading text-center">Please sign up</h2>
+         @Html.HiddenFor(m=> m.Role)
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "User Name", @readonly = "readonly" })
+            @Html.ValidationMessageFor(m => m.UserName)
+        </div>
+
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email", @readonly ="readonly" })
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+
+        <div class="form-group">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
+            @Html.ValidationMessageFor(m => m.Password)
+        </div>
+
+        <div class="form-group"> 
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confirm Password" })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword)
+        </div>
+
+        <div class="form-group">
+            <input type="submit" class="btn btn-block btn-primary" value="Sign Up" />
+        </div>
+    }
+
+    <hr />
+
+    <p> @Html.ActionLink("Back", "LogOn", "Account", new { @class = "btn btn-default" })</p>
+    <p>
+        Already have an account? Please @Html.ActionLink("Sign In", "LogOn")
+    </p>
+</div>

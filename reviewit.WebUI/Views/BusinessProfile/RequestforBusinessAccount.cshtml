@@ -1,0 +1,56 @@
+﻿@model reviewIt.Core.ViewModels.BusinessProfileViewModel
+@{
+    ViewBag.Title = "Request for Business Account";
+}
+
+<h2>Request for Business Account</h2>
+
+@using (Html.BeginForm("RequestforBusinessAccount", "BusinessProfile", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <h2 class="form-signin-heading text-center"></h2>
+    @Html.ValidationSummary(true)
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4">
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.BusinessName, new { @class = "form-control", @placeholder = "Business Name" })
+            @Html.ValidationMessageFor(m => m.BusinessName)
+        </div>
+
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "Your Name" })
+            @Html.ValidationMessageFor(m => m.UserName)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email" })
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.City, new { @class = "form-control", @placeholder = "Location" })
+            @Html.ValidationMessageFor(m => m.City)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Website, new { @class = "form-control", @placeholder = "Website Address" })
+            @Html.ValidationMessageFor(m => m.Website)
+        </div>      
+
+        <div class="form-group">
+            @Html.DropDownListFor(m => m.CategoryId, new SelectList(ViewBag.businessCategoryList, "Value", "Text"),"Select Category")
+            @Html.ValidationMessageFor(m => m.CategoryId)
+        </div>
+
+        <div class="form-group">
+            @Html.TextAreaFor(m => m.About, new { @class = "form-control", @placeholder = "About" })
+            @Html.ValidationMessageFor(m => m.About)
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-block btn-primary" value="Submit" />
+        </div>
+
+        <div >
+            <p> @Html.ActionLink("Back", "LogOn", "Account", null, new { @class = "btn btn-default" })</p>
+        </div>
+    </div>
+
+
+}

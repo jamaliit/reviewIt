@@ -1,0 +1,98 @@
+﻿@model reviewIt.Core.ViewModels.ReviewViewModel
+@{
+    ViewBag.Title = "Review";
+}
+<link href="~/Content/rateit.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.rateit.js"></script>
+
+<br/>
+<h3 style="text-align:center">Edit Review</h3>
+
+
+
+<h2 class="form-signin-heading text-center"></h2>
+@Html.HiddenFor(m => m.Rating)
+@Html.HiddenFor(m => m.ReviewId)
+<div class="col-lg-3 "></div>
+<div class="col-lg-5 ">
+    <div class="form-group">
+        @Html.DropDownListFor(m => m.BusinessId, new SelectList(ViewBag.AllBusinessList, "Value", "Text"), "Select One")
+        @Html.ValidationMessageFor(m => m.BusinessId)
+    </div>
+
+    <div class="rateit" id="rateit10b" data-rateit-step="1">
+    </div>
+
+    <div class="form-group">
+        @Html.TextAreaFor(m => m.PostReview, new { @class = "form-control", @placeholder = "Review" })
+        @Html.ValidationMessageFor(m => m.PostReview)
+    </div>
+
+    <div class="form-group">
+        @Html.TextBoxFor(m => m.Createdby, new { @class = "form-control", @placeholder = @User.Identity.Name, @readonly = "readonly" })
+        @Html.ValidationMessageFor(m => m.Createdby)
+    </div>
+    <div class="form-group">
+        <input type="submit" onclick="submitRecord()" class="btn btn-block btn-primary" value="Submit" />
+    </div>
+    @Html.ActionLink("Back", "AllUserReview", "Review", new { user = User.Identity.Name }, new { @class = "btn btn-success" })
+
+
+    </div>
+
+    <script type="text/javascript">
+
+        var tooltipvalues = ['bad', 'poor', 'ok', 'good', 'super'];
+        $("#rateit10b").bind('over', function (event, value) { $(this).attr('title', tooltipvalues[value - 1]); });
+
+
+        $(document).ready(function () {
+
+            var rate = $('#Rating').val();
+
+            $('#rateit10b').rateit('value', rate);
+        });
+
+
+        function submitRecord() {
+
+            var rating = $('#rateit10b').rateit('value');
+
+            var businessId = $('#BusinessId').val();
+            var post = $('#PostReview').val();
+           
+            var id = $('#ReviewId').val();
+            //var owner = $('#Createdby').val();
+            if (id!="" && rating != "" && businessId != "" && post != "") {
+
+                $.ajax({
+                    url: '@Url.Action("Edit","Review")',
+                    type: 'post',
+                    data: {
+                        id: id,
+                        businessId: businessId,
+
+                        rating: rating,
+                        post: post,
+                        owner: '@User.Identity.Name',
+                        date: '@DateTime.Now'
+                    },
+                    success: function (data) {
+                        window.location.href = '@Url.Action("UserOwnProfile", "UserProfile")' + '?' +
+    $.param({
+        user: '@User.Identity.Name'
+    });
+                    },
+                    error: function (data) {
+                        alert("error occured")
+                    },
+                });
+            }
+            else {
+                alert("Please fill up all fields");
+            }
+        }
+
+    </script>

@@ -1,0 +1,92 @@
+﻿@model reviewIt.Core.ViewModels.BusinessProfileViewModel
+@{
+    ViewBag.Title = "Edit Profile";
+}
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+<br />
+<h3 style="text-align:center">Update Profile</h3>
+<br />
+@using (Html.BeginForm("Edit", "BusinessProfile", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+    <h2 class="form-signin-heading text-center"></h2>
+    @Html.HiddenFor(m => m.BusinessId)
+    @Html.HiddenFor(m => m.UserName)
+    @Html.HiddenFor(m => m.Email)
+    @Html.HiddenFor(m => m.ImageName)
+
+    <div class="col-lg-3 "></div>
+    <div class="col-lg-5 ">
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.BusinessName, new { @class = "form-control", @placeholder = "User Name" })
+            @Html.ValidationMessageFor(m => m.BusinessName)
+        </div>
+
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Website, new { @class = "form-control", @placeholder = "Website Address" })
+            @Html.ValidationMessageFor(m => m.Website)
+        </div>
+
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", @placeholder = "Phone" })
+            @Html.ValidationMessageFor(m => m.Phone)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Location, new { @class = "form-control", @placeholder = "Address" })
+            @Html.ValidationMessageFor(m => m.Location)
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.City, new { @class = "form-control", @placeholder = "City" })
+            @Html.ValidationMessageFor(m => m.City)
+        </div>
+
+        <div class="form-group">
+            @Html.DropDownListFor(m => m.CategoryId, new SelectList(ViewBag.businessCategoryList, "Value", "Text"),"Select a Business Category")
+            @Html.ValidationMessageFor(m => m.CategoryId)
+        </div>
+        <div class="form-group">
+            @Html.TextAreaFor(m => m.About, new { @class = "form-control", @placeholder = "About" })
+            @Html.ValidationMessageFor(m => m.About)
+        </div>
+
+        <div class="form-group">
+            <input type="submit" class="btn btn-block btn-primary" value="Submit" />
+        </div>
+        @Html.ActionLink("Back", "IndividualBusinessProfile", "BusinessProfile", new { user = User.Identity.Name }, new { @class = "btn btn-success" })
+
+
+    </div>
+}
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $('#file').on('change', function () {
+            // alert("ddd");
+            $("img#imgPreview").attr('src', ''); //First remove the image src if already selected
+            //To check if uploaded file is image only..
+            var fileExtension = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+            if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                alert("Only image files are allowed!");
+                return false;
+            }
+
+
+            //To check 'FileReader' is supported by browser or not..
+            if (typeof (FileReader) != 'undefined') {
+                var frImage = new FileReader();
+                frImage.onload = function (e) {
+                    $("img#imgPreview").attr('src', e.target.result);
+                }
+                frImage.readAsDataURL($(this)[0].files[0]);
+            } else {
+                alert("Your browser does not support FileReader!");
+            }
+        });
+
+    });
+
+</script>

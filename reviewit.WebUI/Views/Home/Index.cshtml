@@ -1,0 +1,77 @@
+﻿
+<br/>
+<h2>Index</h2>
+
+<link href="~/Content/rateit.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+
+@*<img src="@Url.Action("DrawChartwithHtmlHelper")" alt="Drawing chart with HTML Helper" />*@
+
+
+
+<br/><br/>
+
+<p>
+@if ( User.IsInRole("Admin"))
+            {
+
+    @Html.ActionLink("Business Category Wise Review Chart", "CategoryWiseRating", "Home",null, new { @class = "btn btn-primary" })
+    <span style="padding-left:20px">
+        @Html.ActionLink("Monthly Rating overview", "CategoryWiseRatingWithinDate", "Home", null, new { @class = "btn btn-primary" })
+    </span>
+            }
+    <p>
+<br/>
+@if (User.IsInRole("Admin"))
+{
+<div id="chartdiv" style="width: 800px; height: 500px;">
+</div>
+}
+
+
+
+<script type="text/javascript">
+
+    google.charts.load("current", { packages: ["corechart"] });
+
+    //$('#btnSubmit').click(function () {
+
+        $(document).ready(function () {
+
+        $.ajax(
+              {
+                  url: '/Home/TotalUservsNoOfUserwhoGivesReviews',
+                  type: 'get',
+                  dataType: "json",
+                  success: successFunc,
+                  error: errorFunc
+              });
+
+        function successFunc(datachart) {
+            var data = google.visualization.arrayToDataTable([
+            ['Element', 'Density', { role: 'annotation' }],
+             ['#UserWhodoesNotGiveReviews', datachart.NoOfUserWhodoesNotGiveReviews, datachart.NoOfUserWhodoesNotGiveReviews],                              // More typically this would be done using a
+              ['#UserGivesReviews', datachart.NoOfUserGiveReviews, datachart.NoOfUserGiveReviews],                           // formatter.
+            ]);
+
+            var options = {
+                'title': 'Overview',
+                'width': 800,
+                'height': 400,
+                bar: { groupWidth: "15%" }
+            };
+            var chart = new google.visualization.PieChart(document.getElementById("chartdiv"));
+            chart.draw(data, options);
+        }
+
+        function errorFunc() {
+           // alert('MVC controller call failed.');
+        }
+    });
+</script>

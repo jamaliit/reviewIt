@@ -1,0 +1,56 @@
+﻿@model reviewIt.WebUI.Models.RegisterModel
+
+@{
+   // Layout = null;
+}
+
+<title>Register</title>
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+<div class="col-md-offset-4 col-md-4">
+    @Html.ValidationSummary(true, "Account creation was unsuccessful. Please correct the errors and try again.")
+
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        <h2 class="form-signin-heading text-center">Please sign up</h2>
+            @Html.HiddenFor(m=>m.Role)
+        
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "User Name" })
+            @Html.ValidationMessageFor(m => m.UserName)
+        </div>
+        
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email" })
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+
+        <div class="form-group">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
+            @Html.ValidationMessageFor(m => m.Password)
+        </div>
+
+        <div class="form-group">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confirm Password" })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword)
+        </div>
+
+        <div class="form-group">
+            <input type="submit" class="btn btn-block btn-primary" value="Sign Up" />
+        </div>
+    }
+
+    <hr />
+
+    <p>    <p> @Html.ActionLink("Back", "LogOn", "Account", new { @class = "btn btn-default" })</p></p>
+    <p>
+        Already have an account? Please @Html.ActionLink("Sign In", "LogOn")
+    </p>
+    <p>
+      Request for a Business Profile   @Html.ActionLink("Create a Business", "RequestforBusinessAccount", "BusinessProfile")
+    </p>
+</div>

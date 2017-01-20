@@ -1,0 +1,50 @@
+﻿@model IEnumerable<reviewIt.Core.ViewModels.BusinessProfileViewModel>
+@{
+    ViewBag.Title = "Businesses";
+}
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<h2>All Business</h2>
+
+
+
+<table class="table">
+    <tr>
+
+        <th>Business Name</th>
+        <th>Email</th>
+        <th>City</th>
+        <th>About</th>
+        <th></th>
+    </tr>
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    <a href='@Url.Action("IndividualBusinessProfile", "BusinessProfile", new{ id = item.BusinessId}, null )'>  @Html.DisplayFor(model => item.BusinessName)</a>
+</td>
+                <td>
+                    @Html.DisplayFor(model => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.City)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(model => item.About)
+                </td>
+                @using (Html.BeginForm("ApproveRequest", "BusinessProfile", new { Businessid = item.BusinessId }, FormMethod.Post, new { }))
+                {
+                   
+                }
+            </tr>
+        }
+    }
+</table>
+

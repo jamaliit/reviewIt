@@ -1,0 +1,126 @@
+﻿
+@model reviewIt.Core.ViewModels.ReviewViewModel
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/Highcharts-4.0.1/js/highcharts.js"></script>
+<br/>
+<h3 style="text-align:center">Monthly Review No.</h3><br/>
+
+<div class="form-group">
+    <p style="text-align:center">
+        @if (User.IsInRole("Admin"))
+        {
+            @Html.DropDownListFor(m => m.BusinessId, new SelectList(ViewBag.AllBusinessList, "Text", "Text"))
+        }
+        else
+        {
+            <input type="text" id="BusinessId" value="@User.Identity.Name" readonly="true" hidden />
+            @*@Html.TextBoxFor(m => m.BusinessId, new {  @placeholder = @User.Identity.Name, @readonly = "readonly" })*@
+        }
+       Select Year: <select id="year" name="year">
+            <script>
+                var myDate = new Date();
+                var year = myDate.getFullYear();
+                for (var i = 2014; i < year + 1; i++) {
+                    document.write('<option value="' + i + '">' + i + '</option>');
+                }
+            </script>
+
+        </select>
+            &nbsp;&nbsp;  
+            <input type="submit" onclick="submitRecord()" class="btn-primary" value="Submit" />
+
+    </p>
+</div>
+<script> 
+
+    function submitRecord(){
+    
+      
+        var businessName = $('#BusinessId').val();
+        
+       // var post = $('#PostReview').val();
+        var year = $('#year').val();
+     //  alert(year)
+       // alert(businessName)
+        $.ajax({
+            url: '@Url.Action("CategoryWiseRatingWithinDateRange", "Home")',
+            type: 'post',
+            data: {
+                businessName: businessName,
+                year: year,
+             
+            },
+            success: function (data) {
+                window.location.href = '@Url.Action("CategoryWiseRatingWithinDateRange", "Home")' + '?' +
+                    $.param({
+                        businessName: businessName,
+                        year: year
+                    });
+               // alert("data saved successfully")
+            },
+            error: function (data) {
+                alert("There is no review in your selected year")
+            },
+        });
+        }
+</script>
+
+
+
+
+
+
+
+
+@*@{
+    ViewBag.Title = "CategoryWiseRatingWithinDate";
+}
+
+<link href="~/Content/jquery-ui-1.12.1/jquery-ui.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Content/jquery-ui-1.12.1/jquery-ui.js"></script>
+<h2>CategoryWiseRatingWithinDate</h2>
+
+
+<p> from Date: <input type="text" id="datepicker" >
+to Date: <input type="text" id="datepicker1"></p>
+
+<button id="btnSubmit">
+    UservsUserReviews
+</button>
+
+<script>
+    $('#datepicker').datepicker();
+    $('#datepicker1').datepicker();
+
+    $('#btnSubmit').click(function () {
+        var date1 = $('#datepicker').val();
+        var date2 = $('#datepicker1').val();
+        alert(date1);
+        alert(date2);
+
+        $.ajax({
+            url: '@Url.Action("CategoryWiseRatingWithinDateRange", "Home")',
+            type: 'post',
+            data: {
+                fromDate: date1,
+                toDate: date2
+            },
+            success: function (data) {
+                alert("data saved successfully")
+            },
+            error: function (data) {
+                alert("error occured")
+            },
+        });
+
+    })
+</script>*@
+
+
+
+
+
+

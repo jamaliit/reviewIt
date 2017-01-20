@@ -1,0 +1,82 @@
+﻿@model reviewIt.Core.ViewModels.UserProfileViewModel
+@{
+    ViewBag.Title = "Edit Profile";
+}
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<br/>
+<h3 style="text-align :center">Update Profile</h3>
+
+@using (Html.BeginForm("Edit", "UserProfile", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+    <h2 class="form-signin-heading text-center"></h2>
+    @Html.HiddenFor(m => m.UserId)
+    @Html.HiddenFor(m=> m.ImageName)
+    <div class="col-lg-4 "></div>
+    <div class="col-lg-5 ">
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "User Name", @readonly = "readonly" })
+            @Html.ValidationMessageFor(m => m.Name)
+        </div>
+
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email", @readonly = "readonly" })
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Location, new { @class = "form-control", @placeholder = "Location" })
+            @Html.ValidationMessageFor(m => m.Location)
+        </div>
+        <div class="form-group">
+            @Html.TextAreaFor(m => m.About, new { @class = "form-control", @placeholder = "About" })
+            @Html.ValidationMessageFor(m => m.About)
+        </div>
+
+
+        @*<div class="form-group">
+                @Html.TextBoxFor(m => m.About, new { @class = "form-control", @placeholder = "About" })
+                @Html.ValidationMessageFor(m => m.About)
+            </div>*@
+
+        <div class="form-group center">
+            <input type="submit" class="btn btn-block btn-primary " value="Submit" />
+        </div>
+        @Html.ActionLink("Back", "UserOwnProfile", "UserProfile", new { user = User.Identity.Name }, new { @class = "btn btn-success" })
+
+
+    </div>
+}
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $('#file').on('change', function () {
+           // alert("ddd");
+            $("img#imgPreview").attr('src', ''); //First remove the image src if already selected
+            //To check if uploaded file is image only..
+            var fileExtension = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+            if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                alert("Only image files are allowed!");
+                return false;
+            }
+
+
+            //To check 'FileReader' is supported by browser or not..
+            if (typeof (FileReader) != 'undefined') {
+                var frImage = new FileReader();
+                frImage.onload = function (e) {
+                    $("img#imgPreview").attr('src', e.target.result);
+                }
+                frImage.readAsDataURL($(this)[0].files[0]);
+            } else {
+                alert("Your browser does not support FileReader!");
+            }
+        });
+
+    });
+
+</script>

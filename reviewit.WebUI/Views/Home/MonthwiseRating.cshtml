@@ -1,0 +1,33 @@
+﻿@model IEnumerable<reviewIt.Core.ViewModels.ReviewViewModel>
+    
+@{
+        ViewBag.Title = "Reviews";
+    }
+    <link href="~/Content/rateit.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.rateit.js"></script>
+    <h2>All Review for this Business</h2>
+
+
+
+
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            <div style="border-color:yellow ">
+                
+                 <div>
+                    Review:  @Html.DisplayFor(model => item.month)
+                </div>
+                <div>
+                    Review:  @Html.DisplayFor(model => item.day)
+                </div>
+                <div>
+                    Review:  @Html.DisplayFor(model => item.Rating)
+                </div>
+            </div>
+            <br /><br />
+        }
+    }

@@ -1,0 +1,55 @@
+﻿@if (Request.IsAuthenticated)
+{
+    <text>
+
+@if (User.IsInRole("User"))
+{
+    //@Membership.GetUserNameByEmail()
+    <h2><a href="@Url.Action("UserOwnProfile", "UserProfile", new { user = User.Identity.Name })">@User.Identity.Name</a></h2>
+}
+else if(User.IsInRole("Business Owner"))
+{
+   <h2> <a href="@Url.Action("PartialViewBusinessandAdvertisement", "BusinessProfile", new { user = User.Identity.Name })">@User.Identity.Name</a>
+    @*<h2>@Html.ActionLink(User.Identity.Name, "PartialViewBusinessandAdvertisement", "BusinessProfile", routeValues: null, htmlAttributes: new { @class = "username", title = "Manage" })!*@
+</h2>
+}
+else if (User.IsInRole("Admin"))
+{
+  <h2><a href="@Url.Action("Index", "Home",null)">@User.Identity.Name</a></h2>
+   
+}
+ 
+ @if (User.IsInRole("Admin"))
+{
+<a href="@Url.Action("ApproveRequest", "BusinessProfile", null)">Business Request</a>
+
+}
+<a href="@Url.Action("Ranking", "Home")">
+    Top Businesses
+</a>                          
+
+<a href="@Url.Action("Search", "Home")">
+    Search
+</a>
+        &nbsp;&nbsp;
+        <a href="@Url.Action("ChangePassword", "Account")">
+           Change Password
+        </a>      
+
+        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+        {
+            @Html.AntiForgeryToken()
+            <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+        }
+    </text>
+}
+else
+{
+    <ul>
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "LogOn", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}
+
+
+

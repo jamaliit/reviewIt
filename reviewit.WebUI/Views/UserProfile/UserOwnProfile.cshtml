@@ -1,0 +1,243 @@
+﻿@model reviewIt.Core.ViewModels.UserProfileViewModel
+@{
+    ViewBag.Title = "UserProfile";
+}
+
+<link href="~/Content/rateit.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<div>
+    <div class="row" id="user">
+        <br /><br /><br />
+        <div class="col-lg-3" style="padding:20px;">
+            <img src="@Url.Content("~/Uploads/" + @Model.ImageName) " style=" height:200px;width:200px; border:1px solid #021a40;" alt="Image" /><br />
+            <br />
+            &nbsp;&nbsp;
+            @if (User.Identity.Name.Equals(Model.Name) && User.IsInRole("User"))
+            {
+                <a href='@Url.Action("UploadProfilePicture", "UserProfile", new { id = Model.UserId }, null)'>Update Profile Picture</a>
+            }
+        </div>
+
+        <div class="col-lg-5">
+            <h3 style="color: darkblue; margin-top:50%">
+                @Model.Name
+            </h3>
+        </div>
+
+        <div class="col-lg-4">
+            <ul class="list-group" id="">
+                <li class="list-group-item">
+                    @Html.ActionLink("All Reviews", "AllUserReview", "Review", new { user = @Model.Name }, new { @class = "btn btn-block" })
+                </li>
+               
+                    @if (User.Identity.Name.Equals(Model.Name) && User.IsInRole("User"))
+                    {
+                        <li class="list-group-item">
+                            @Html.ActionLink("Write a Review", "Create", "Review", null, new { @class = "btn btn-block" })
+                        </li>
+                    }
+                
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-5" id="col5">
+            <ul class="list-group" id="listGroup">
+                <li class="list-group-item"><i class="fa fa-user">  </i>  @Model.Name</li>
+                <li class="list-group-item"><i class="fa fa-envelope"> </i>  @Model.Email</li>
+                <li class="list-group-item"><i class="fa fa-location-arrow"> </i>  @Model.Location</li>
+                <li class="list-group-item"><i class="fa fa-info-circle"> </i>  @Model.About</li>
+                <li class="list-group-item"><i class="fa fa-star"> </i><a href="#chartdiv"> @Model.TotalReviews Reviews</a></li>
+
+                @if (User.Identity.Name.Equals(Model.Name) && User.IsInRole("User"))
+                {
+                    <li class="list-group-item center">@Html.ActionLink("Update Profile", "Edit", new { id = @Model.UserId }, new { @class = "btn btn-success" })  </li>
+                }
+            </ul>
+        </div>
+
+        <div class="col-lg-7" id="col7">
+            <div id="chartdiv" style="box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);">
+            </div>
+        </div>
+    </div>
+    <br /><br />
+
+    <div class="row" style="box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);">
+        <br />
+        <div id="chartdiv1">
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript">
+        google.charts.load("current", { packages: ["corechart"] });
+        google.charts.load("current", { packages: ["calendar"] });
+
+
+        $(document).ready(function () {
+
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+            var user = getParameterByName('user');
+
+
+            $.ajax(
+                {
+                    url: '/Home/OverallRatingChartforUser',
+                    type: 'get',
+                    dataType: "json",
+                    data: {
+                        user: user,
+                    },
+                    success: successFunc,
+                    error: errorFunc
+                });
+
+            function successFunc(datachart) {
+
+                var data = google.visualization.arrayToDataTable([
+                ['Element', 'Density', { role: 'annotation' }],
+                 ['5*', datachart.star5, datachart.star5],                              // More typically this would be done using a
+                  ['4*', datachart.star4, datachart.star4],                           // formatter.
+                  ['3*', datachart.star3, datachart.star3],
+                 ['2*', datachart.star2, datachart.star2],
+                 ['1*', datachart.star1, datachart.star1]
+                ]);
+
+                var options = {
+                    'title': 'Overview',
+                    'width': 562,
+                    'height': 370,
+                    bar: { groupWidth: "15%" }
+                };
+                var chart = new google.visualization.BarChart(document.getElementById("chartdiv"));
+                chart.draw(data, options);
+                calenderChart();
+            }
+
+            function errorFunc() {
+                alert('MVC controller call failed.');
+            }
+
+
+            // Calender Chart
+
+            function calenderChart() {
+
+                var myDate = new Date();
+                var year = myDate.getFullYear();
+
+                $.ajax(
+                      {
+                          url: '/Home/MonthDaywiseReviewCalenderChartforUser',
+                          type: 'get',
+                          dataType: "json",
+                          data: {
+                              user: user,
+                              year: year,
+                          },
+                          success: successFunc1,
+                          error: errorFunc1
+                      });
+
+                function successFunc1(datachart) {
+
+                    var data = new google.visualization.DataTable();
+                    data.addColumn({ type: 'date', id: 'Date' });
+                    data.addColumn({ type: 'number', id: 'Review No.' });
+
+                    for (var i = 0; i < datachart.length; i++) {
+
+                        data.addRows([
+                           [new Date(year, datachart[i].month - 1, datachart[i].day), datachart[i].Rating],
+                        ]);
+                    }
+
+
+
+
+                    var options = {
+                        title: "User Activity",
+                        height: 350,
+                        noDataPattern: {
+                            backgroundColor: '#3b2834',
+                            color: 'white'
+                        },
+                        calendar: {
+                            monthLabel: {
+                                fontName: 'Times-Roman',
+                                fontSize: 12,
+                                color: '#981b48',
+                                bold: true,
+                                italic: false
+                            },
+                            monthOutlineColor: {
+                                stroke: '#981b48',
+                                strokeOpacity: 0.8,
+                                strokeWidth: 2
+                            },
+                            unusedMonthOutlineColor: {
+                                stroke: '#bc5679',
+                                strokeOpacity: 0.8,
+                                strokeWidth: 1
+                            },
+                            underMonthSpace: 16,
+                        }
+
+
+                    };
+
+                    var chart = new google.visualization.Calendar(document.getElementById("chartdiv1"));
+                    chart.draw(data, options);
+                }
+
+                function errorFunc1() {
+                    alert('MVC controller call failed.');
+                }
+            }
+        });
+    </script>
+
+
+    <style>
+        #user {
+            background-color: #f7f9f9;
+            padding-top: 30px;
+        }
+
+        #col5 {
+            padding-left: -20px;
+            margin-top: 15px;
+            background-color: rgb(255,255,255);
+        }
+
+        #listGroup {
+            margin-top: 20px;
+            margin-bottom: 5px;
+            padding-left: -70px;
+            width: 100%;
+            float: left;
+            box-shadow: #f7f9f9;
+            background-color: rgb(255,255,255);
+        }
+
+        #chartdiv {
+            margin-top: 15px;
+        }
+    </style>

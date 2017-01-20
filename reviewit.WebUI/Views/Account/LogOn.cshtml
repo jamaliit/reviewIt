@@ -1,0 +1,51 @@
+﻿@model reviewIt.WebUI.Models.LogOnModel
+
+@{
+    //Layout = null;
+}
+
+<title>Sign In</title>
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+<div class="col-md-offset-4 col-md-4">
+    @Html.ValidationSummary(true, "Login was unsuccessful. Please correct the errors and try again.")
+
+    @using (Html.BeginForm("LogOn", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        <h2 class="form-signin-heading text-center">Please sign in</h2>
+        
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "User Name or Email" })
+            @Html.ValidationMessageFor(m => m.UserName)
+        </div>
+
+        <div class="form-group">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
+            @Html.ValidationMessageFor(m => m.Password)
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-7">
+                @Html.CheckBoxFor(m => m.RememberMe)
+                @Html.LabelFor(m => m.RememberMe)
+            </div>
+
+            <div class="col-md-5">
+                <input type="submit" class="btn btn-block btn-primary" value="Sign In" />
+            </div>
+        </div>
+    }
+
+    <hr />
+
+    <p>
+        Don't have an account? Please @Html.ActionLink("Register", "Register")
+    </p>
+    <p>
+       Register Your Business   @Html.ActionLink("Click here", "RequestforBusinessAccount", "BusinessProfile")
+    </p>
+</div>

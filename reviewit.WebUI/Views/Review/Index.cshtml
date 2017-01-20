@@ -1,0 +1,58 @@
+﻿@model IEnumerable<reviewIt.Core.ViewModels.ReviewViewModel>
+@{
+    ViewBag.Title = "Reviews";
+}
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<h2>All Review</h2>
+
+
+
+<table class="table">
+    <tr>
+
+        <th>User Name</th>
+        <th>Business name</th>
+        <th>Preoduct Nam</th>
+        <th>Rating</th>
+        <th>Post</th>
+        <th>Action</th>
+    </tr>
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                     @Html.DisplayFor(model => item.Createdby)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.BusinessName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.ProductName)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(model => item.Rating)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(model => item.PostReview)
+                </td>
+                
+                    @using (Html.BeginForm("Edit", "Review", new { id = item.ReviewId }, FormMethod.Post, new { }))
+                    {
+                       <td>
+                    <button type="submit" id="btnApprove"> Edit </button>                   
+                </td> 
+                    }
+            </tr>
+        }
+    }
+</table>
+
